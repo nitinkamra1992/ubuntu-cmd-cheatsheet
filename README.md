@@ -17,20 +17,19 @@ passwd -u {username}
 usermod -U -e {YYYY-mm-dd} {username}
 ```
 
-**Killing processes**
------------------------------
+## Killing processes
 
-safest: interactive, matches REGEX to process name
+1. Safest: interactive, matches REGEX to process name
 ```bash
 killall -9 -ir REGEX_PATTERN
 ```
 
-pretty safe, matches username, then process name
+2. Pretty safe, matches username, then process name
 ```bash
 kill -9 `ps aux | grep USERNAME | grep PROCESSNAME | awk '{print $2}'`
 ```
 
-less safe
+3. Less safe
 ```bash
 kill -9 $(pidof PROCESSNAME)
 killall -9 PROCESSNAME
