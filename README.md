@@ -1,14 +1,18 @@
 # Cheatsheet of useful Ubuntu Commands
 
-[Raspberry Pi Documentation on Linux](https://www.raspberrypi.org/documentation/linux/) is a great resource to learn about Ubuntu/Linux from scratch. This repository contains a cheatsheet of commands from it (and other resources) for quick reference.
+[Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/) is a great resource to learn about Ubuntu/Linux from scratch. This repository contains a cheatsheet of commands from it (and other resources) for quick reference. It also haslinks to useful tutorials on several topics wherever required.
 
-## Root User/Superuser (sudo)
+## Basic Commands
+
+- 'echo': Display a line of text, e.g. `echo hello world`.
+
+#### Root User/Superuser (sudo)
 
 - Run commands as the root user by using the `sudo` command before the program you want to run.
 - Run a superuser shell: `sudo su`.
 - Use `sudo -s` for a superuser shell.
 
-## Home
+#### Home
 
 - Home directory: `/home/{username}/`.
 - Navigating to home folder:
@@ -18,10 +22,6 @@
   cd /home/{username}
   ```
 **Note**: When logged in as the root user, typing `cd` or `cd ~` will take you to the root user's home directory; unlike normal users, this is located at `/root/` not `/home/root/`.
-
-## Basic Commands
-
-- 'echo': Display a line of text, e.g. `echo hello world`.
 
 #### Files and directories
 
