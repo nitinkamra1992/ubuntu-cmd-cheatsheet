@@ -64,6 +64,7 @@
 - `grep`: Search inside files for certain search patterns, e.g. `grep "search" *.txt` will look in all the files in the current directory ending with `.txt` for the string `search`. `grep` supports regular expressions which allows special letter combinations to be included in the search.
 - `awk`: A programming language useful for searching and manipulating text files.
 - `find`: Searches a directory and subdirectories for files matching certain patterns.
+    - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
 
 #### Pipes
