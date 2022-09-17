@@ -1,6 +1,6 @@
 # Cheatsheet of useful Ubuntu Commands
 
-[Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/) is a great resource to learn about Ubuntu/Linux from scratch. This repository contains a cheatsheet of commands from it (and other resources) for quick reference. It also haslinks to useful tutorials on several topics wherever required.
+[Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/) is a great resource to learn about Ubuntu/Linux from scratch. This repository contains a cheatsheet of commands from it (and other resources) for quick reference. It also has links to useful tutorials on several topics wherever required.
 
 ## Basic Commands
 
@@ -180,6 +180,7 @@ The above examples all send the `SIGKILL` signal to the PID specified.
 - Change shell for a user: `sudo chsh {username}`.
 - Change details of a user: `sudo chfn {username}`.
 - Listing all local users: `cut -d: -f1 /etc/passwd`, where `cut` cuts each line of the file `/etc/passwd` by reading fields delimited by colon (`-d:`) and selecting the first field (`-f1`).
+- Checking disk usage of users: `sudo du -hd1 /home | sort -hr`. This lists all users' disk usage in human-readable format (-h) upto depth 1 (-d1) and pipes it to the sort tool to arrange the list in reverse order by size (-r).
 
 
 ## Installing software (apt/apt-get)
