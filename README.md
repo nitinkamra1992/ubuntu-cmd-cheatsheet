@@ -1,32 +1,43 @@
 # Cheatsheet of useful Ubuntu Commands
 
-[Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/) is a great resource to learn about Ubuntu/Linux from scratch. This repository contains a cheatsheet of commands from it (and other resources) for quick reference. It also has links to useful tutorials on several topics wherever required.
+This repository contains a cheatsheet of commands for Ubuntu/Linux from various sources for quick reference. It also has links to useful tutorials for topics which cannot be summarized in a small cheatsheet.
 
-## Basic Commands
+#### Sources
 
-- 'echo': Display a line of text, e.g. `echo hello world`.
+- [Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/)
+- [The Art of Command Line](https://github.com/jlevy/the-art-of-command-line)
 
-#### Root User/Superuser (sudo)
+## Basics on a terminal
 
-- Run commands as the root user by using the `sudo` command before the program you want to run.
+- Can use the terminal for typing and executing commands.
+- **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
+- To terminate an active command running in the terminal, press `Ctrl + C`.
+
+
+#### Shell scripting
+
+- Commands can be combined together in a file which can then be executed.
+- Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
+- See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
+- The `nano` editor is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
+- Good to familiarize yourself with Bash job management: `&`, `ctrl-z`, `ctrl-c`, `jobs`, `fg`, `bg`, `kill` etc.
+
+
+## CPU
+
+- Type `lscpu` for details about your cpu.
+
+
+## Root User/Superuser (sudo)
+
+- Run commands as the root user by using the `sudo` command:
 - Run a superuser shell: `sudo su`.
 - Use `sudo -s` for a superuser shell.
 
-#### Home
 
-- Home directory: `/home/{username}/`.
-- Navigating to home folder:
-  ```bash
-  cd
-  cd ~
-  cd /home/{username}
-  ```
-**Note**: When logged in as the root user, typing `cd` or `cd ~` will take you to the root user's home directory; unlike normal users, this is located at `/root/` not `/home/root/`.
+## Files and directories
 
-#### Files and directories
-
-- List information about the FILEs (default: current directory): `ls [OPTION] [FILE]`.
-- Some useful flags for `ls`: 
+- List information about the FILEs (default: current directory): `ls [OPTION] [FILE]`. Some useful flags for `ls`: 
     - `-a, --all`: List all (including hidden files starting with a `.`) files
     - `-d, --directory`: List directories themselves, not their contents
     - `-h, --human-readable`: With `-l` and/or `-s`, print human readable sizes
@@ -35,7 +46,7 @@
     - `-s, --size`: Print the allocated size of each file, in blocks
 - Change directory: `cd {path_to_dir}`.
 - Present working directory: `pwd`.
-- Make directory: `mkdir {dirname}`.
+- Make directory: `mkdir {dirname}`. Use the `-p` option when creating a path to create parent directories as well.
 - Delete file/directory:
     - `rm {filename}`
     - `rm -rf {dirname}`: `-r, -R, --recursive` flag deletes directories and their contents recursively; `-f, --force` never prompts and forcefully deletes even non-empty directories.
@@ -46,8 +57,15 @@
 - `head {filename}`: Displays the beginning of a file. Use `-n` to specify the number of lines to show (default: 10) or `-c` to specify the number of bytes.
 - `tail {filename}`: Displays the end of a file. The starting point in the file can be specified either through `-c` for bytes or `-n` for number of lines.
 - `df`: Displays the disk space available and used on the mounted filesystems. Use `-h` for human-readable format for sizes.
-- `du`: Displays disk usage of a file or directory, e.g. `du -hd2 {dirname}` where `-h` flag makes sizes human-readable and `-d{number}` sets the recursion depth for subdirectories.
+- `du`: Displays disk usage of a file or directory, e.g. `du -hd2 {dirname}` where `-h` flag makes sizes human-readable and `-d{number}` sets the recursion depth for subdirectories. E.g., checking disk usage of users: `sudo du -hd1 /home | sort -hr`. This lists all users' disk usage in human-readable format (-h) upto depth 1 (-d1) and pipes it to the sort tool to arrange the list in reverse order by size (-r).
 - `tree`: Show a directory and all subdirectories and files indented as a tree structure.
+- Your home directory: `/home/{username}/`. Can navigate to home folder:
+  ```bash
+  cd
+  cd ~
+  cd /home/{username}
+  ```
+  **Note**: The root user's home directory, unlike normal users, is located at `/root/` not `/home/root/`.
 
 #### Permissions
 
@@ -67,22 +85,15 @@
     - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
 
-#### Pipes
 
-A pipe allows the output from one command to be used as the input for another command. The pipe symbol is a vertical line `|`. For example, to only show the first ten entries of the `ls` command it can be piped through the head command  `ls | head`.
+## Redirecting input and output
 
-#### Shell Scripting
+- A pipe `|` allows the output from one command to be used as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
+- `>` and `<` can be used to redirect outputs too. `>` overwrites the output file and `>>` appends to it.
 
-Commands can be combined together in a file which can then be executed (preferably with `.sh` extension if you are using `bash` terminal). You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`. To terminate an active command running in the terminal, press `Ctrl + C`. See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
 
-#### Download/Upload
+## Networks
 
-- `ssh` denotes Secure Shell to connect to another computer using an encrypted network connection. See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/) page for a brief SSH tutorial.
-- `scp`: Copies files between different machines using `ssh`. See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md) link for a `scp` tutorial. Example usage: `scp {filename} {username}@{ipaddress}:{dirname}[/filename]`.
-- Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options.
-- `curl`: Download or upload a file to/from a server. By default, it will output the file contents of the file to the screen.
-
-#### Networking
 - `ping` utility is usually used to check if communication can be made with another host, e.g.:
   ```bash
   ping google.com
@@ -91,6 +102,23 @@ Commands can be combined together in a file which can then be executed (preferab
 - `nmap` is a network exploration and scanning tool. It can return port and OS information about a host or a range of hosts. Running just `nmap` will display the options available as well as example usage.
 - `hostname`: Displays the current hostname of the system. A superuser can set the hostname to a new one by supplying it as an argument (e.g. `hostname {newhost}`).
 - `ifconfig`: Displays the network configuration details for the interfaces on the current system when run without any arguments. By supplying the name of an interface (e.g. `eth0` or `lo`) you can then alter the configuration.
+
+#### SSH
+
+- `ssh` denotes Secure Shell to connect to another remote machine using an encrypted network connection. Example usage: `ssh {username}@{ipaddress}`. Type in your password next and connect to the `{ipaddress}`.
+- See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/) page for a brief SSH tutorial.
+- **Passwordless SSH**: To configure your machine to ssh into another remote machine without typing a password every time, you need to use an SSH key. To generate an SSH key:
+    - **Checking for Existing SSH Keys**: First, run `ls ~/.ssh`. If you see files named `id_rsa.pub` or `id_dsa.pub` then you have keys set up already, so you can skip the 'Generate new SSH keys' step below.
+    - **Generate new SSH Keys**: Run `ssh-keygen`. You will be asked where to save the key with a recommended default location (`~/.ssh/id_rsa`). Press `Enter`. You can enter an optional passphrase to encrypt the private SSH key, so that if someone else copied the key, they could not impersonate you to gain access. Type a passphrase here or leave it empty for no passphrase and press `Enter`. Run `ls ~/.ssh` and you should see the files `id_rsa` and `id_rsa.pub`. The `id_rsa` file is your private key to be kept on your machine. The `id_rsa.pub` file is your public key to share with remote machines that you connect to. When the machine you try to connect to matches up your public and private key, it will allow you to connect.
+    - **Copy your Key to your remote machine**: Using the machine which you will be connecting from, append the public key to your `authorized_keys` file on the remote machine by sending it over SSH: `ssh-copy-id {username}@{ipaddress}` during which you need to authenticate with your password. Alternatively, you can copy the file manually over SSH: `cat ~/.ssh/id_rsa.pub | ssh {username}@{ipaddress} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'`.
+    - Now try `ssh {username}@{ipaddress}` to connect without a password prompt.
+
+#### Download/upload files
+
+- `scp`: Copies files between different machines using `ssh`. See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md) link for a `scp` tutorial. Example usage: `scp {filename} {username}@{ipaddress}:{dirname}[/filename]`.
+- Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options.
+- `curl`: Download or upload a file to/from a server. By default, it will output the file contents of the file to the screen.
+
 
 ## Processes
 
@@ -180,7 +208,6 @@ The above examples all send the `SIGKILL` signal to the PID specified.
 - Change shell for a user: `sudo chsh {username}`.
 - Change details of a user: `sudo chfn {username}`.
 - Listing all local users: `cut -d: -f1 /etc/passwd`, where `cut` cuts each line of the file `/etc/passwd` by reading fields delimited by colon (`-d:`) and selecting the first field (`-f1`).
-- Checking disk usage of users: `sudo du -hd1 /home | sort -hr`. This lists all users' disk usage in human-readable format (-h) upto depth 1 (-d1) and pipes it to the sort tool to arrange the list in reverse order by size (-r).
 
 
 ## Installing software (apt/apt-get)
@@ -201,7 +228,6 @@ Use `apt` or `apt-get` tool to install softwares. `apt` keeps a list of software
 ## Miscellaneous and Advanced Topics
 
 - Scheduling tasks can be done with Cron. See a good Cron tutorial [here](https://www.raspberrypi.org/documentation/linux/usage/cron.md).
-- [Text editors](https://www.raspberrypi.org/documentation/linux/usage/text-editors.md) in Linux.
 - In order to have a command or program run when the computer boots, you can add commands to the `rc.local` file. See more details [here](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md).
 - Use `systemd` to create services. See [this](https://www.raspberrypi.org/documentation/linux/usage/systemd.md) brief tutorial.
 - Setting aliases with `.bashrc` and `bash_aliases`: see [tutorial](https://www.raspberrypi.org/documentation/linux/usage/bashrc.md).
