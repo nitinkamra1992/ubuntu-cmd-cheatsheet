@@ -167,7 +167,7 @@ A hard link:
 
 - `scp`: Copies files between different machines using `ssh`. See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md) link for a `scp` tutorial. Example usage: `scp {filename} {username}@{ipaddress}:{dirname}[/filename]`.
 - Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options.
-- `curl`: Download or upload a file to/from a server. By default, it will output the file contents of the file to the screen.
+- `curl`: Download or upload a file to/from a server. By default, it will output the file contents to the screen.
 
 
 ## Processes
