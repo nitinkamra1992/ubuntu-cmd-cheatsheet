@@ -1,4 +1,4 @@
-# Cheatsheet of useful Ubuntu Commands
+# Cheatsheet of Ubuntu Commands
 
 This repository contains a cheatsheet of commands for Ubuntu/Linux from various sources for quick reference. It also has links to useful tutorials for topics which cannot be summarized in a small cheatsheet.
 
@@ -7,20 +7,38 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 - [Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/)
 - [The Art of Command Line](https://github.com/jlevy/the-art-of-command-line)
 
-## Basics on a terminal
 
-- Can use the terminal for typing and executing commands.
+## Basics of a Terminal/Shell
+
+Terminal/Shell is used for typing and executing commands.
 - **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
-- To terminate an active command running in the terminal, press `Ctrl + C`.
+- To terminate an active running command, press **ctrl-c**.
 
+#### Finding Help
 
-#### Shell scripting
+- Use `man {command}` to display a manual for a command. Try `man man`!
+- Manual pages have a short description. Use `apropos {keyword}` to search the descriptions for instances of `keyword`.
+- Some commands are not executables, but shell builtins.
+  - `man` only helps for executables. For builtins, use `help {command}`.
+  - `help -d` gives a list of builtins.
+  - Use `type {command}` to find out if a command is an executable or a shell builtin or an alias. Try `type cd`, `type find`, `type ls`.
+- `curl cheat.sh/{command}` gives a cheat sheet with common example usages of `command`.
+- If you don't understand a command, can use [explainshell](https://explainshell.com/) to get a helpful breakdown for it.
+
+#### Shell Scripting
 
 - Commands can be combined together in a file which can then be executed.
 - Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
 - See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
 - The `nano` editor is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
-- Good to familiarize yourself with Bash job management: `&`, `ctrl-z`, `ctrl-c`, `jobs`, `fg`, `bg`, `kill` etc.
+- TODO: Familiarize yourself with Bash job management: `&`, **ctrl-z**, **ctrl-c**, `jobs`, `fg`, `bg`, `kill`, etc.
+- TODO: Learn about file glob expansion with `*` (and perhaps `?` and `[`...`]`) and quoting and the difference between double `"` and single `'` quotes.
+
+
+## Redirecting Input and Output
+
+- A pipe `|` allows the output from one command to be used as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
+- `>` and `<` can be used to redirect outputs to a stream or a file. `>` overwrites the output file and `>>` appends to it. TODO: Learn about stdout and stderr.
 
 
 ## CPU
@@ -35,12 +53,13 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 - Use `sudo -s` for a superuser shell.
 
 
-## Files and directories
+## Files and Directories
 
 - List information about the FILEs (default: current directory): `ls [OPTION] [FILE]`. Some useful flags for `ls`: 
-    - `-a, --all`: List all (including hidden files starting with a `.`) files
+    - `-a, --all`: List all files (including hidden files starting with a `.`)
     - `-d, --directory`: List directories themselves, not their contents
     - `-h, --human-readable`: With `-l` and/or `-s`, print human readable sizes
+    - `-i, --inode`: Print the index number (inode) of each file
     - `-l`: Long list format to display additional information (permissions, owner, group, size, date and timestamp of last edit) for each file and directory
     - `-R, --recursive`: List subdirectories recursively
     - `-s, --size`: Print the allocated size of each file, in blocks
@@ -52,12 +71,13 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
     - `rm -rf {dirname}`: `-r, -R, --recursive` flag deletes directories and their contents recursively; `-f, --force` never prompts and forcefully deletes even non-empty directories.
 - Copy: `cp {src_file} {dst_file}`. Can take `FILE FILE` or `FILE DIR` or `-r DIR DIR`.
 - Move/Cut: `mv {src_file} {dst_file}`. Can take `FILE FILE` or `FILE DIR` or `-r DIR DIR`.
-- Use `man {command}` to show the manual page for a command. Try `man man`!
 - `cat`: List the contents of file or multiple files, e.g. `cat {filename}` or `cat *.txt`.
 - `head {filename}`: Displays the beginning of a file. Use `-n` to specify the number of lines to show (default: 10) or `-c` to specify the number of bytes.
-- `tail {filename}`: Displays the end of a file. The starting point in the file can be specified either through `-c` for bytes or `-n` for number of lines.
+- `tail {filename}`: Displays the end of a file. The starting point in the file can be specified either through `-c` for bytes or `-n` for number of lines. `tail -f {filename}` allows viewing growing files.
+- `less {filename}`: Command line utility to display contents of a file or command output, one page at a time and allows navigating both forward and backward. It doesn’t read the entire file, leading to faster load times compared to text editors like vim or nano. Hence, it is mostly used for opening large files. `less +F` allows viewing growing files.
 - `df`: Displays the disk space available and used on the mounted filesystems. Use `-h` for human-readable format for sizes.
 - `du`: Displays disk usage of a file or directory, e.g. `du -hd2 {dirname}` where `-h` flag makes sizes human-readable and `-d{number}` sets the recursion depth for subdirectories. E.g., checking disk usage of users: `sudo du -hd1 /home | sort -hr`. This lists all users' disk usage in human-readable format (-h) upto depth 1 (-d1) and pipes it to the sort tool to arrange the list in reverse order by size (-r).
+- inodes: Can check inodes of files with `ls -i` or `df -i`.
 - `tree`: Show a directory and all subdirectories and files indented as a tree structure.
 - Your home directory: `/home/{username}/`. Can navigate to home folder:
   ```bash
@@ -69,8 +89,43 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 
 #### Permissions
 
-- `chmod`: To change permissions for a file. Can use symbols `u` (user that owns the file), `g` (the files group) and `o` (other users) and the permissions `r` (read), `w` (write) and `x` (execute). Using `chmod u+x {filename}` will add execute permission for the owner of the file.
+- `chmod`: To change permissions for a file. Can use symbols `u` (user that owns the file), `g` (the files group) and `o` (other users) and the permissions `r` (read), `w` (write) and `x` (execute).
+  - Using `chmod u+x {filename}` will add execute permission for the owner of the file.
+  - Can also encode the `ugo` permissions into 3 octals in range `{0-7}` each representing the `rwx` values, e.g., `chmod 764 {file}` gives read, write and execute permissions (111 = 7) to the user, read and write permissions (110 = 6) to the group, and read permissions (100 = 4) to others.
 - `chown`: Changes the user and/or group that owns a file, e.g., `sudo chown {username}:{grpname} {filename}` will change the owner to `{username}` and the group to `{grpname}`.
+
+#### Hard and Soft Links
+
+A symbolic or soft link is a special sort of file that points to a different file's path (like shortcuts in Windows). A hard link, on the other hand, points to the exact inode (memory address) of the original file.
+
+If you delete the original file, the soft link has no value, because it points to a non-existent file. But for hard links, even if you delete the original file, the hard link still points to the original file data.
+
+In a soft link, the connection is a logical one, and not a duplication. So soft links can point at entire directories or cross file systems and link to files on remote computers. Hard links cannot do this.
+
+However, hard links are not copies of a file since they don't duplicate the contents of the file. So if you modify the content of a copy, it has no effect on the original. However if you create a hard link to a file and change the content of either of the files, the change will be seen on both.
+
+In a nutshell, a soft link:
+- can cross the file system
+- allows you to link between directories
+- has separate inode number and file permissions than original file
+- has only the path of the original file, not the contents
+- created by `ln -s {source} {softlink}`
+
+A hard link:
+- can't cross the file system boundaries (only works on the same filesystem)
+- can't link directories
+- has the same inode number and permissions of the original file
+- points to the actual contents of original file, so you can still view the contents, even if the original file is moved or removed
+- created by `ln {source} {hardlink}`
+
+#### File Systems
+
+- The `mount` command attaches the filesystem on some device to your device's file tree. The `umount` command detaches it.
+  - Attach with `mount {device} {dir}`.
+  - Detach with `umount {dir}`. `umount {device}` will work, except if `device` was mounted on more than one directory.
+- `fdisk`: Manipulate disk partition table
+- `mkfs`: Build a Linux filesystem
+- `lsblk`: List block devices
 
 #### Compression
 
@@ -84,12 +139,6 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 - `find`: Searches a directory and subdirectories for files matching certain patterns.
     - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
-
-
-## Redirecting input and output
-
-- A pipe `|` allows the output from one command to be used as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
-- `>` and `<` can be used to redirect outputs too. `>` overwrites the output file and `>>` appends to it.
 
 
 ## Networks
@@ -112,6 +161,7 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
     - **Generate new SSH Keys**: Run `ssh-keygen`. You will be asked where to save the key with a recommended default location (`~/.ssh/id_rsa`). Press `Enter`. You can enter an optional passphrase to encrypt the private SSH key, so that if someone else copied the key, they could not impersonate you to gain access. Type a passphrase here or leave it empty for no passphrase and press `Enter`. Run `ls ~/.ssh` and you should see the files `id_rsa` and `id_rsa.pub`. The `id_rsa` file is your private key to be kept on your machine. The `id_rsa.pub` file is your public key to share with remote machines that you connect to. When the machine you try to connect to matches up your public and private key, it will allow you to connect.
     - **Copy your Key to your remote machine**: Using the machine which you will be connecting from, append the public key to your `authorized_keys` file on the remote machine by sending it over SSH: `ssh-copy-id {username}@{ipaddress}` during which you need to authenticate with your password. Alternatively, you can copy the file manually over SSH: `cat ~/.ssh/id_rsa.pub | ssh {username}@{ipaddress} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'`.
     - Now try `ssh {username}@{ipaddress}` to connect without a password prompt.
+    - TODO: Find out more about basics of passwordless authentication, via `ssh-agent`, `ssh-add`, etc.
 
 #### Download/upload files
 
