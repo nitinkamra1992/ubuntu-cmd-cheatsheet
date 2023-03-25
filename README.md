@@ -41,9 +41,10 @@ Terminal/Shell is used for typing and executing commands.
 - `>` and `<` can be used to redirect outputs to a stream or a file. `>` overwrites the output file and `>>` appends to it. TODO: Learn about stdout and stderr.
 
 
-## CPU
+## System Information
 
-- Type `lscpu` for details about your cpu.
+- `hostname`: Displays the current hostname of the system. A superuser can set the hostname to a new one by supplying it as an argument (e.g. `hostname {newhost}`).
+- `lscpu`: Display details about your cpu architecture.
 
 
 ## Root User/Superuser (sudo)
@@ -134,7 +135,17 @@ A hard link:
 
 #### Search
 
-- `grep`: Search inside files for certain search patterns, e.g. `grep "search" *.txt` will look in all the files in the current directory ending with `.txt` for the string `search`. `grep` supports regular expressions which allows special letter combinations to be included in the search.
+- `grep`: Search inside files for certain search patterns, e.g. `grep "search" *.txt` will look in all the files in the current directory ending with `.txt` for the string `search`. `grep` supports regular expressions which allows special letter combinations to be included in the search. Some useful flags:
+  - `-n`: Print line numbers from files where pattern matches
+  - `-r`: Recursive flag (for directories)
+  - `-w`: Match only whole words
+  - `-x`: Match only whole lines
+  - `-v`: Select non-matching lines
+  - `-f`: Specify the file containing the patterns to search for
+  - `-i`: Ignore case in patterns and data
+  - `-m`: Maximum number of matches to output
+  - `-H`: Print file name with output lines
+  - `-h`: Suppress the file name prefix with output
 - `awk`: A programming language useful for searching and manipulating text files.
 - `find`: Searches a directory and subdirectories for files matching certain patterns.
     - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`
@@ -149,8 +160,11 @@ A hard link:
   ping 8.8.8.8
   ```
 - `nmap` is a network exploration and scanning tool. It can return port and OS information about a host or a range of hosts. Running just `nmap` will display the options available as well as example usage.
-- `hostname`: Displays the current hostname of the system. A superuser can set the hostname to a new one by supplying it as an argument (e.g. `hostname {newhost}`).
-- `ifconfig`: Displays the network configuration details for the interfaces on the current system when run without any arguments. By supplying the name of an interface (e.g. `eth0` or `lo`) you can then alter the configuration.
+- `ifconfig`: Displays the network configuration details for the interfaces on the current system when run without any arguments (useful to check your ip address). By supplying the name of an interface (e.g. `eth0` or `lo`) you can then alter the configuration.
+- `ip`: Show/manipulate routing, network devices, interfaces and tunnels. Typing `ip -c address` can show you the ip address for all the network interfaces on the current system (`-c` adds color to the output).
+- `traceroute`: Print the route packets trace to a network host.
+- `dig`: TODO: Learn more.
+- `route`: TODO: Learn more.
 
 #### SSH
 
@@ -260,20 +274,28 @@ The above examples all send the `SIGKILL` signal to the PID specified.
 - Listing all local users: `cut -d: -f1 /etc/passwd`, where `cut` cuts each line of the file `/etc/passwd` by reading fields delimited by colon (`-d:`) and selecting the first field (`-f1`).
 
 
-## Installing software (apt/apt-get)
+## Installing software
 
 Use `apt` or `apt-get` tool to install softwares. `apt` keeps a list of software sources on your system in a file: `/etc/apt/sources.list`.
-
-- Update the list of available software: `sudo apt-get update`.
-- Install a package: `sudo apt-get install {package}`.
-- Remove a package: `sudo apt-get remove {package}`.
-- Completely remove the package and its associated configuration files: `sudo apt-get purge {package}`.
+- Update the list of available software: `sudo apt update`.
+- Install a package: `sudo apt install {package}`.
+- Remove a package: `sudo apt remove {package}`.
+- Completely remove the package and its associated configuration files: `sudo apt purge {package}`.
 - Can use a `-y` flag to answer the yes/no prompt with a yes in `install`, `remove`, `purge`.
 - Upgrading packages:
-    - Upgrade all packages: `sudo apt-get upgrade`.
-    - Upgrade a certain package: `sudo apt-get install --upgrade {package}`.
+    - Upgrade all packages: `sudo apt upgrade`.
+    - Upgrade a certain package: `sudo apt install --upgrade {package}`.
 - Search archives for a package with a given keyword: `apt-cache search {keyword}`.
 - View more information about a package before installing it: `apt-cache show {package}`.
+
+Use `pip` to install `python` packages. See a detailed tutorial [here](https://realpython.com/what-is-pip/). Some common usage syntaxes below.
+- `pip install {package}`: Install a python `package`.
+- `pip list`: List all installed packages in the environment and their version numbers.
+- `pip show {package}`: Display info about a `package`.
+- `pip install -i {index} {package}`: Install `package` from a different index as opposed to the default PyPI index.
+- `pip freeze > requirements.txt`: Create a `requirements.txt` file with all packages installed in the current environment and their version numbers.
+- `pip install -r requirements.txt`: Install all packages from `requirements.txt`.
+
 
 ## Miscellaneous and Advanced Topics
 
@@ -281,3 +303,4 @@ Use `apt` or `apt-get` tool to install softwares. `apt` keeps a list of software
 - In order to have a command or program run when the computer boots, you can add commands to the `rc.local` file. See more details [here](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md).
 - Use `systemd` to create services. See [this](https://www.raspberrypi.org/documentation/linux/usage/systemd.md) brief tutorial.
 - Setting aliases with `.bashrc` and `bash_aliases`: see [tutorial](https://www.raspberrypi.org/documentation/linux/usage/bashrc.md).
+- Version control tools are useful for coding. Learn more about `git` by googling for a good tutorial.
