@@ -31,14 +31,35 @@ Terminal/Shell is used for typing and executing commands.
 - Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
 - See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
 - The `nano` editor is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
+
+#### Bash Shortcuts
+
+- Use **Tab** to complete arguments or list all available commands.
+- Use **ctrl-r** to search through command history (after pressing, type to search, press **ctrl-r** repeatedly to cycle through more matches, press **Enter** to execute the found command, or hit the right arrow to put the result in the current line to allow editing).
+- Use **ctrl-a** to move cursor to beginning of line, **ctrl-e** to move cursor to end of line, **ctrl-k** to kill to the end of the line, **ctrl-l** to clear the screen. See `man readline` for all the default keybindings in Bash.
+- For editing long commands, after setting your editor (for example `export EDITOR=vim`), **ctrl-x** **ctrl-e** will open the current command in an editor for multi-line editing.
+- To see recent commands, use `history`. Follow with `!n` (where `n` is the command number) to execute again.
+- Use the `{}` shell operator to bunch things together. Example: `mkdir -p /home/user/tmp/{dir1,anotherdir,similardir}`.
 - TODO: Familiarize yourself with Bash job management: `&`, **ctrl-z**, **ctrl-c**, `jobs`, `fg`, `bg`, `kill`, etc.
 - TODO: Learn about file glob expansion with `*` (and perhaps `?` and `[`...`]`) and quoting and the difference between double `"` and single `'` quotes.
 
 
-## Redirecting Input and Output
+## Constructing Commands
+
+#### Redirecting Input and Output
 
 - A pipe `|` allows the output from one command to be used as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
 - `>` and `<` can be used to redirect outputs to a stream or a file. `>` overwrites the output file and `>>` appends to it. TODO: Learn about stdout and stderr.
+- Use `xargs` (or `parallel`) to build and execute command lines from standard input. This allows easily piping outputs of commands to others.
+  - Note you can control how many processes execute in parallel with `-P`.
+  - `-I{}` is handy for piping outputs into a subsequent command at the right location.
+
+  Examples:
+  ```bash
+        find ./ -name '*.py' | xargs grep -nr <pattern>
+        cat ./hostnames.txt | xargs -I{} ssh root@{} hostname
+  ```
+- Use `parallel` to build and execute shell command lines from standard input in parallel. Very useful to run jobs in parallel, without using loops in `sh` scripts. See the [manpage](https://manpages.ubuntu.com/manpages/impish/man1/parallel.1.html) for details.
 
 
 ## System Information
@@ -64,7 +85,7 @@ Terminal/Shell is used for typing and executing commands.
     - `-l`: Long list format to display additional information (permissions, owner, group, size, date and timestamp of last edit) for each file and directory
     - `-R, --recursive`: List subdirectories recursively
     - `-s, --size`: Print the allocated size of each file, in blocks
-- Change directory: `cd {path_to_dir}`.
+- Change directory: `cd {path_to_dir}`. To go back to the previous working directory: `cd -`.
 - Present working directory: `pwd`.
 - Make directory: `mkdir {dirname}`. Use the `-p` option when creating a path to create parent directories as well.
 - Delete file/directory:
@@ -86,6 +107,7 @@ Terminal/Shell is used for typing and executing commands.
   cd ~
   cd /home/{username}
   ```
+  In `sh` scripts refer to the home directory as `$HOME`.
   **Note**: The root user's home directory, unlike normal users, is located at `/root/` not `/home/root/`.
 
 #### Permissions
@@ -126,7 +148,7 @@ A hard link:
   - Detach with `umount {dir}`. `umount {device}` will work, except if `device` was mounted on more than one directory.
 - `fdisk`: Manipulate disk partition table
 - `mkfs`: Build a Linux filesystem
-- `lsblk`: List block devices
+- `lsblk`: List block devices. Great for listing partitions and their sizes.
 
 #### Compression
 
@@ -148,7 +170,7 @@ A hard link:
   - `-h`: Suppress the file name prefix with output
 - `awk`: A programming language useful for searching and manipulating text files.
 - `find`: Searches a directory and subdirectories for files matching certain patterns.
-    - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`
+  - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
 
 
@@ -180,13 +202,14 @@ A hard link:
 #### Download/upload files
 
 - `scp`: Copies files between different machines using `ssh`. See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md) link for a `scp` tutorial. Example usage: `scp {filename} {username}@{ipaddress}:{dirname}[/filename]`.
-- Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options.
+- Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options. You can also download full websites this way.
 - `curl`: Download or upload a file to/from a server. By default, it will output the file contents to the screen.
 
 
 ## Processes
 
 - `ps`: View processes that are currently running and their PIDs.
+- `pstree -p` is a helpful display of the process tree.
 - `top`and `htop`: Real-time list of processes and their consumption of system resources.
 - `glances`: Display all processes and resource (cpu, ram, hard disk etc.) consumption.
 - Run a command/process in the background with `&`, freeing up the shell for future commands.
@@ -297,7 +320,16 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
 - `pip install -r requirements.txt`: Install all packages from `requirements.txt`.
 
 
-## Miscellaneous and Advanced Topics
+## Miscellaneous Stuff
+
+- Convert an image sequence into a video: `ffmpeg -framerate 30 -pattern_type glob -i '*.jpg' -c:v libx264 -pix_fmt yuv420p out.mp4`.
+- Merge multiple jpgs vertically: `convert pic1.jpg pic2.jpg pic3.jpg -append pic.jpg`
+- Show a zoomable world map: `telnet mapscii.me`.
+- `nvidia-smi`: Monitor nvidia gpu usage.
+- `watch`: Repeat a command periodically and update output on terminal. Example: `watch -n 5 nvidia-smi` monitors the gpu usage every 5 seconds.
+
+
+## Advanced Topics
 
 - Scheduling tasks can be done with Cron. See a good Cron tutorial [here](https://www.raspberrypi.org/documentation/linux/usage/cron.md).
 - In order to have a command or program run when the computer boots, you can add commands to the `rc.local` file. See more details [here](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md).
