@@ -287,7 +287,7 @@ The above examples all send the `SIGKILL` signal to the PID specified.
     - `-l, --lock`: Lock password of a user    
     - `-u, --unlock`: Unlock password of a user
     - `-S, --status`: Password status of a user
-    - `-e, --expire`: Force expire passwordof a user
+    - `-e, --expire`: Force expire password of a user
 - User password expiry:
     - Set expiry date for user password: `chage -E 2020-07-30 {username}`. See [this](https://unix.stackexchange.com/questions/80968/how-can-i-create-automatically-expiring-user-accounts) link for more options.
     - View password expiry information for user: `chage -l {username}`.
@@ -328,6 +328,13 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
 - `nvidia-smi`: Monitor nvidia gpu usage.
 - `watch`: Repeat a command periodically and update output on terminal. Example: `watch -n 5 nvidia-smi` monitors the gpu usage every 5 seconds.
 
+#### Coding
+
+- Version control tools are useful for coding. Learn more about `git` by googling for a good tutorial.
+- `cloc` can be used to count lines of code in a directory, project or file. Examples:
+  - `cloc ./` for a directory
+  - `cloc $(git ls-files)` for a git repo
+
 
 ## Advanced Topics
 
@@ -335,4 +342,3 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
 - In order to have a command or program run when the computer boots, you can add commands to the `rc.local` file. See more details [here](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md).
 - Use `systemd` to create services. See [this](https://www.raspberrypi.org/documentation/linux/usage/systemd.md) brief tutorial.
 - Setting aliases with `.bashrc` and `bash_aliases`: see [tutorial](https://www.raspberrypi.org/documentation/linux/usage/bashrc.md).
-- Version control tools are useful for coding. Learn more about `git` by googling for a good tutorial.
