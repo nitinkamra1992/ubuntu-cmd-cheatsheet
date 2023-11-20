@@ -42,7 +42,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 #### Bash Shortcuts
 
 - Use **Tab** to complete arguments or list all available commands.
-- Use `clear` to actually clear the terminal.
+- Use `clear` to clear the terminal.
 - Use `reset` to both clear the terminal and reset its settings to their default values.
 - Use **ctrl-r** to search through command history (after pressing, type to search, press **ctrl-r** repeatedly to cycle through more matches, press **Enter** to execute the found command, or hit the right arrow to put the result in the current line to allow editing).
 - Use **ctrl-a** to move cursor to beginning of line, **ctrl-e** to move cursor to end of line, **ctrl-k** to kill to the end of the line, **ctrl-l** to scroll down your terminal to a new command hiding all the content above. See `man readline` for all the default keybindings in Bash.
