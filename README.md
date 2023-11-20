@@ -6,22 +6,27 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 
 - [Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/)
 - [The Art of Command Line](https://github.com/jlevy/the-art-of-command-line)
+- [MIT - The missing semester of your CS education](https://missing.csail.mit.edu/)
 
 
 ## Basics of a Terminal/Shell
 
-Terminal/Shell is used for typing and executing commands.
+Terminal/Shell is used for typing and executing programs/commands. It is actually an interpreter which accepts a shell programming language syntax and looks to invoke programs if a written instruction cannot be matched to its expected language syntax.
 - **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
+- The arguments to a command/program are separated with spaces.
 - To terminate an active running command, press **ctrl-c**.
+- The terminal looks for locations to find programs in the order listed in your `$PATH` environment variable. The `$PATH` environment variable is a colon-separated list of locations.
+- Run `which <program-name>` to find out where you are running the program from.
 
 #### Finding Help
 
-- Use `man {command}` to display a manual for a command. Try `man man`!
+- Use `man {command}` to display a manual for a command. Try `man man`! Press `q` to exit.
 - Manual pages have a short description. Use `apropos {keyword}` to search the descriptions for instances of `keyword`.
 - Some commands are not executables, but shell builtins.
   - `man` only helps for executables. For builtins, use `help {command}`.
   - `help -d` gives a list of builtins.
   - Use `type {command}` to find out if a command is an executable or a shell builtin or an alias. Try `type cd`, `type find`, `type ls`.
+- Most programs also support `--help` argument to display help.
 - `curl cheat.sh/{command}` gives a cheat sheet with common example usages of `command`.
 - If you don't understand a command, can use [explainshell](https://explainshell.com/) to get a helpful breakdown for it.
 
@@ -31,12 +36,16 @@ Terminal/Shell is used for typing and executing commands.
 - Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
 - See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
 - The `nano` editor is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
+- The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
+- `#` starts a comment in Bash, except if you use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) (`#!`). `!` has a special meaning even within double-quoted (") strings, but Bash treats single-quoted strings (') differently. See the Bash [quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html) manual page for more information.
 
 #### Bash Shortcuts
 
 - Use **Tab** to complete arguments or list all available commands.
+- Use `clear` to actually clear the terminal.
+- Use `reset` to both clear the terminal and reset its settings to their default values.
 - Use **ctrl-r** to search through command history (after pressing, type to search, press **ctrl-r** repeatedly to cycle through more matches, press **Enter** to execute the found command, or hit the right arrow to put the result in the current line to allow editing).
-- Use **ctrl-a** to move cursor to beginning of line, **ctrl-e** to move cursor to end of line, **ctrl-k** to kill to the end of the line, **ctrl-l** to clear the screen. See `man readline` for all the default keybindings in Bash.
+- Use **ctrl-a** to move cursor to beginning of line, **ctrl-e** to move cursor to end of line, **ctrl-k** to kill to the end of the line, **ctrl-l** to scroll down your terminal to a new command hiding all the content above. See `man readline` for all the default keybindings in Bash.
 - For editing long commands, after setting your editor (for example `export EDITOR=vim`), **ctrl-x** **ctrl-e** will open the current command in an editor for multi-line editing.
 - To see recent commands, use `history`. Follow with `!n` (where `n` is the command number) to execute again.
 - Use the `{}` shell operator to bunch things together. Example: `mkdir -p /home/user/tmp/{dir1,anotherdir,similardir}`.
@@ -48,8 +57,15 @@ Terminal/Shell is used for typing and executing commands.
 
 #### Redirecting Input and Output
 
+- Most programs have an input and an output stream.
+- By default the input stream defaults to the keyboard and the output stream defaults to the terminal.
+- `>` and `<` can be used to redirect inputs and outputs to a stream or a file.
+  - `<` re-wires the input of the program to a file.
+  - `>` re-wires the output of the program to a file.
+  - `>>` appends the output to an existing file.
+  - TODO: Learn about stdout and stderr.
+
 - A pipe `|` allows the output from one command to be used as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
-- `>` and `<` can be used to redirect outputs to a stream or a file. `>` overwrites the output file and `>>` appends to it. TODO: Learn about stdout and stderr.
 - Use `xargs` (or `parallel`) to build and execute command lines from standard input. This allows easily piping outputs of commands to others.
   - Note you can control how many processes execute in parallel with `-P`.
   - `-I{}` is handy for piping outputs into a subsequent command at the right location.
@@ -66,12 +82,15 @@ Terminal/Shell is used for typing and executing commands.
 
 - `hostname`: Displays the current hostname of the system. A superuser can set the hostname to a new one by supplying it as an argument (e.g. `hostname {newhost}`).
 - `lscpu`: Display details about your cpu architecture.
+- `date`: Get the current date and time.
 
 
 ## Root User/Superuser (sudo)
 
-- Run commands as the root user by using the `sudo` command:
-- Run a superuser shell: `sudo su`.
+- `root` user is the user with id 0 and full access to the system --> superuser.
+- Run commands as the root user by using the `sudo` command (do as superuser).
+- If you have to chain commands via pipe, `sudo` might only apply to the first command. Instead use `#` to run the full composed command as superuser, e.g.: `# echo 1 > /sys/net/ipv4_forward`.
+- Alternatively, run a superuser shell: `sudo su`.
 - Use `sudo -s` for a superuser shell.
 
 
@@ -82,7 +101,14 @@ Terminal/Shell is used for typing and executing commands.
     - `-d, --directory`: List directories themselves, not their contents
     - `-h, --human-readable`: With `-l` and/or `-s`, print human readable sizes
     - `-i, --inode`: Print the index number (inode) of each file
-    - `-l`: Long list format to display additional information (permissions, owner, group, size, date and timestamp of last edit) for each file and directory
+    - `-l`: Long list format to display additional information (permissions, owner, group, size, date and timestamp of last edit) for each file and directory.
+      - The permissions are shown via `drwxrwxrwx` bits.
+      - `d` indicates a directory and the three groups of `rwx` bits display read, write and execute permissions for the owner, group and others respectively.
+      - While read, write and execute might be simple to understand for files, they are interpreted differently for directories.
+      - Read means you are allowed to see/list (`ls`) what files are in the directory.
+      - Write means you are allowed to rename, remove or create files in that directory. So even if you have write permissions on a file in that directory, you can modify it but cannot delete it unless you also have write permissions on its directory.
+      - Execute means you are allowed to search/enter (`cd`) the directory. You need to have execute permissions on a directory and all its parents to be able to enter it.
+      - A dash `-` means a lack of a permission.
     - `-R, --recursive`: List subdirectories recursively
     - `-s, --size`: Print the allocated size of each file, in blocks
 - Change directory: `cd {path_to_dir}`. To go back to the previous working directory: `cd -`.
@@ -91,9 +117,10 @@ Terminal/Shell is used for typing and executing commands.
 - Delete file/directory:
     - `rm {filename}`
     - `rm -rf {dirname}`: `-r, -R, --recursive` flag deletes directories and their contents recursively; `-f, --force` never prompts and forcefully deletes even non-empty directories.
+    - `rmdir {dirname}` removes only an empty directory.
 - Copy: `cp {src_file} {dst_file}`. Can take `FILE FILE` or `FILE DIR` or `-r DIR DIR`.
-- Move/Cut: `mv {src_file} {dst_file}`. Can take `FILE FILE` or `FILE DIR` or `-r DIR DIR`.
-- `cat`: List the contents of file or multiple files, e.g. `cat {filename}` or `cat *.txt`.
+- Move/Cut/Rename: `mv {src_file} {dst_file}`. Can take `FILE FILE` or `FILE DIR` or `-r DIR DIR`.
+- `cat`: List the contents of file or multiple files, e.g. `cat {filename}` or `cat *.txt`. `cat` actually concatenates its input files into a single output.
 - `head {filename}`: Displays the beginning of a file. Use `-n` to specify the number of lines to show (default: 10) or `-c` to specify the number of bytes.
 - `tail {filename}`: Displays the end of a file. The starting point in the file can be specified either through `-c` for bytes or `-n` for number of lines. `tail -f {filename}` allows viewing growing files.
 - `less {filename}`: Command line utility to display contents of a file or command output, one page at a time and allows navigating both forward and backward. It doesn’t read the entire file, leading to faster load times compared to text editors like vim or nano. Hence, it is mostly used for opening large files. `less +F` allows viewing growing files.
@@ -109,6 +136,10 @@ Terminal/Shell is used for typing and executing commands.
   ```
   In `sh` scripts refer to the home directory as `$HOME`.
   **Note**: The root user's home directory, unlike normal users, is located at `/root/` not `/home/root/`.
+- There are also special directories: `.` (current directory), `..` (parent directory) and `~` (home directory), which can be used with `cd`, `ls` or to specify relative paths in general.
+- `tee {filename}` copies standard input to standard output, making a copy in `{filename}`. Useful for logging. E.g.: `echo hello | tee file.txt`.
+- `xdg-open {filename}` opens files from a shell. By default, it'll use the default application for that file. If the file is in the form of a URL, the file will be opened as a URL. In MacOS, just use `open {filename}` instead.
+- `touch {filename}` sets the modification and access times of files. If `{filename}` does not exist, it is created with default permissions.
 
 #### Permissions
 
@@ -170,8 +201,12 @@ A hard link:
   - `-h`: Suppress the file name prefix with output
 - `awk`: A programming language useful for searching and manipulating text files.
 - `find`: Searches a directory and subdirectories for files matching certain patterns.
-  - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`
+  - `-user`: Can specify owning user.
+  - `-type f`: Can specify to only search for files.
+  - `-name {pattern}`: Can specify a pattern to match in the name.
+  - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`.
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
+- `cut` allows you to cut and retrieve parts of files. E.g.: `cut -d " " -f 2 file.txt` chunks `file.txt` by the space delimiter and returns the second field/element. Do `man cut` to read more about different ways to cut and retrieve.
 
 
 ## Networks
