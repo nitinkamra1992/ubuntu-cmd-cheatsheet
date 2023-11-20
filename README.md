@@ -14,7 +14,6 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 Terminal/Shell is used for typing and executing programs/commands. It is actually an interpreter which accepts a shell programming language syntax and looks to invoke programs if a written instruction cannot be matched to its expected language syntax.
 - **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
 - The arguments to a command/program are separated with spaces.
-- To terminate an active running command, press **ctrl-c**.
 - The terminal looks for locations to find programs in the order listed in your `$PATH` environment variable. The `$PATH` environment variable is a colon-separated list of locations.
 - Run `which <program-name>` to find out where you are running the program from.
 
@@ -35,7 +34,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - Commands can be combined together in a file which can then be executed.
 - Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
 - See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
-- The `nano` editor is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
+- The [`nano` editor](https://www.nano-editor.org/) is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
 - The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
 - `#` starts a comment in Bash, except if you use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) (`#!`). `!` has a special meaning even within double-quoted (") strings, but Bash treats single-quoted strings (') differently. See the Bash [quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html) manual page for more information.
 
@@ -49,7 +48,8 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - For editing long commands, after setting your editor (for example `export EDITOR=vim`), **ctrl-x** **ctrl-e** will open the current command in an editor for multi-line editing.
 - To see recent commands, use `history`. Follow with `!n` (where `n` is the command number) to execute again.
 - Use the `{}` shell operator to bunch things together. Example: `mkdir -p /home/user/tmp/{dir1,anotherdir,similardir}`.
-- TODO: Familiarize yourself with Bash job management: `&`, **ctrl-z**, **ctrl-c**, `jobs`, `fg`, `bg`, `kill`, etc.
+- To terminate an active running command, press **ctrl-c**.
+- Use **ctrl-z** to suspend a process. When entered by a user, the currently running foreground process is sent a SIGTSTP signal, which generally causes the process to suspend its execution. The user can later continue the process execution (typically via `fg` command -- short for foreground) or run the process in background mode.
 - TODO: Learn about file glob expansion with `*` (and perhaps `?` and `[`...`]`) and quoting and the difference between double `"` and single `'` quotes.
 
 
@@ -57,15 +57,15 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 
 #### Redirecting Input and Output
 
-- Most programs have an input and an output stream.
+- Most programs have an input stream (`stdin`), an output stream (`stdout`) and an error stream (`stderr`).
 - By default the input stream defaults to the keyboard and the output stream defaults to the terminal.
-- `>` and `<` can be used to redirect inputs and outputs to a stream or a file.
+- `>` and `<` can be used to redirect inputs and outputs of programs to a file.
   - `<` re-wires the input of the program to a file.
   - `>` re-wires the output of the program to a file.
   - `>>` appends the output to an existing file.
   - TODO: Learn about stdout and stderr.
 
-- A pipe `|` allows the output from one command to be used as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
+- A pipe `|` redirects output of a command as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
 - Use `xargs` (or `parallel`) to build and execute command lines from standard input. This allows easily piping outputs of commands to others.
   - Note you can control how many processes execute in parallel with `-P`.
   - `-I{}` is handy for piping outputs into a subsequent command at the right location.
@@ -186,7 +186,7 @@ A hard link:
 - `zip` (or `unzip`) can be used to compress (or extract) files into (or from) zip archives.
 - `tar` can also create tar archives for compression. To compress: `tar -cvzf {filename.tar.gz} [{dirname/}]`. To extract: `tar -xvzf {filename.tar.gz}`.
 
-#### Search
+#### Search and Processing
 
 - `grep`: Search inside files for certain search patterns, e.g. `grep "search" *.txt` will look in all the files in the current directory ending with `.txt` for the string `search`. `grep` supports regular expressions which allows special letter combinations to be included in the search. Some useful flags:
   - `-n`: Print line numbers from files where pattern matches
@@ -207,6 +207,8 @@ A hard link:
   - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`.
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
 - `cut` allows you to cut and retrieve parts of files. E.g.: `cut -d " " -f 2 file.txt` chunks `file.txt` by the space delimiter and returns the second field/element. Do `man cut` to read more about different ways to cut and retrieve.
+- `sort {filename}` can sort all lines in a file. It can even take and sort lines from multiple files and merge them.
+- `wc {filename}` gives the line, word and character/byte count in a file. Can also use flags `-w`, `-l`, `-c` and `-m` to extract word count, line count, byte count and character count independently.
 
 
 ## Networks
@@ -247,11 +249,15 @@ A hard link:
 - `pstree -p` is a helpful display of the process tree.
 - `top`and `htop`: Real-time list of processes and their consumption of system resources.
 - `glances`: Display all processes and resource (cpu, ram, hard disk etc.) consumption.
-- Run a command/process in the background with `&`, freeing up the shell for future commands.
+- Run a command/process in the background independently of the shell by including an `&` at the end of the command, freeing up the shell for future commands.
+  - To check the status of your job, use the command `ps`.
+  - To bring a background process to the foreground, use the command `fg`.
+  - If there are more than one job suspended in the background, use the command: `fg {job_number}`.
+  - The job numbers are shown in the first column of the output of the `jobs` command.
 
 #### Killing processes
 
-`kill` and `killall` can be used to terminate or send specific system signals to processes.
+`kill`, `pkill` and `killall` can be used to terminate or send specific system signals to processes.
 
 ##### killall
 
@@ -268,7 +274,7 @@ All the above send the `SIGKILL` signal which is more successful at ending a par
 
 ##### kill
 
-- Terminate processes based on PID: `kill {PID}`.
+- Terminate processes based on PID: `kill {PID}` or job_number: `kill {job_number}`.
 - Without options, `kill` sends `SIGTERM` to the PID specified and asks the application or service to shut itself down.
 - Multiple PIDs and alternate system signals can be specified, e.g.:
 ```bash
