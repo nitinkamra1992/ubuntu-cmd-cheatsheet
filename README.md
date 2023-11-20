@@ -4,9 +4,9 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 
 #### Sources
 
-- [Raspberry Pi's documentation on Linux](https://www.raspberrypi.org/documentation/linux/)
 - [The Art of Command Line](https://github.com/jlevy/the-art-of-command-line)
 - [MIT - The missing semester of your CS education](https://missing.csail.mit.edu/)
+- [IBM's Linux tutorials](https://developer.ibm.com/tutorials/l-lpic1-map/)
 
 
 ## Basics of a Terminal/Shell
@@ -14,7 +14,6 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 Terminal/Shell is used for typing and executing programs/commands. It is actually an interpreter which accepts a shell programming language syntax and looks to invoke programs if a written instruction cannot be matched to its expected language syntax.
 - **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
 - The arguments to a command/program are separated with spaces.
-- The terminal looks for locations to find programs in the order listed in your `$PATH` environment variable. The `$PATH` environment variable is a colon-separated list of locations.
 - Run `which <program-name>` to find out where you are running the program from.
 
 #### Finding Help
@@ -38,6 +37,24 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
 - `#` starts a comment in Bash, except if you use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) (`#!`). `!` has a special meaning even within double-quoted (") strings, but Bash treats single-quoted strings (') differently. See the Bash [quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html) manual page for more information.
 
+#### Variables
+
+- Variables store information and pass it from the shell to programs.
+- Programs look in the environment for particular variables and if they are found will use the values stored.
+- Some variables are set by the system, some by the users, yet others by the shell.
+
+- Variables are split into two categories: ENVIRONMENT variables and SHELL variables.
+  - Shell variables apply only to the current instance of the shell and are used to set short-term working conditions
+  - Environment variables have a farther reaching significance, and those set at login are valid for the duration of the session.
+  - Convention: Environment variables have `UPPER CASE` and shell variables have `lower case` names.
+  - Environment variables are set using the `setenv` command, displayed using the `printenv` or `env` commands, and unset using the `unsetenv` command. To show all environment variables, use: `printenv | less`.
+  - Shell variables are both set and displayed using the `set` command. They can be unset by using the `unset` command.
+
+- Examples:
+  - The shell looks for locations to find programs in the order listed in your `$PATH` environment variable. The `$PATH` environment variable is a colon-separated list of directories. You can append more directories to it by: `export PATH="$PATH:{new_dir}"`.
+  - The `$OSTYPE` environment variable has the current operating system that a user is using.
+  - `$history` is a shell variable. The value of this means how many shell commands to save, allowing users to scroll back through all the commands they have previously entered. Try `echo $history`.
+
 #### Bash Shortcuts
 
 - Use **Tab** to complete arguments or list all available commands.
@@ -50,7 +67,21 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - Use the `{}` shell operator to bunch things together. Example: `mkdir -p /home/user/tmp/{dir1,anotherdir,similardir}`.
 - To terminate an active running command, press **ctrl-c**.
 - Use **ctrl-z** to suspend a process. When entered by a user, the currently running foreground process is sent a SIGTSTP signal, which generally causes the process to suspend its execution. The user can later continue the process execution (typically via `fg` command -- short for foreground) or run the process in background mode.
-- TODO: Learn about file glob expansion with `*` (and perhaps `?` and `[`...`]`) and quoting and the difference between double `"` and single `'` quotes.
+- Use `alias` to add simple aliases for complex commands. E.g., you can add `alias gp='git push'` to your `.bashrc` file to define an alias `gp` for the `git push` command. Search more on setting aliases with `.bashrc` and `bash_aliases`.
+
+#### Shell Prompt
+
+- Shell, when used from a terminal, issues a prompt before reading a command.
+- Typically, a `%`` indicates the C shell (csh) and a `$`` indicates the Bourne shell (sh).
+- Prompt can be controlled via special shell variables: PS1, PS2, PS3 and PS4. If set, the value is executed as a command prior to issuing each primary prompt.
+  - PS1: The value of this parameter is expanded and used as the primary prompt string. The default value is \s-\v\$.
+  - PS2: The value of this parameter is expanded as with PS1 and used as the secondary prompt string. The default is >.
+  - PS3: The value of this parameter is used as the prompt for the select command.
+  - PS4: The value of this parameter is expanded as with PS1 and the value is printed before each command bash displays during an execution trace. The first character of PS4 is replicated multiple times, as necessary, to indicate multiple levels of indirection. The default is +.
+- `echo $PS1` to see the current prompt setting.
+- Change your default prompt by altering your start-up files.
+  - In the C shell, include in your `.login` file: `set prompt='newprompt'`.
+  - In the Bourne shell, you need to set the value of the keyword shell variable PS1. This is just a variable that is declared and initialized by the shell at start-up. Include in your `.profile` file: `export PS1; PS1="newprompt"`.
 
 
 ## Constructing Commands
@@ -103,11 +134,16 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
     - `-i, --inode`: Print the index number (inode) of each file
     - `-l`: Long list format to display additional information (permissions, owner, group, size, date and timestamp of last edit) for each file and directory.
       - The permissions are shown via `drwxrwxrwx` bits.
-      - `d` indicates a directory and the three groups of `rwx` bits display read, write and execute permissions for the owner, group and others respectively.
-      - While read, write and execute might be simple to understand for files, they are interpreted differently for directories.
-      - Read means you are allowed to see/list (`ls`) what files are in the directory.
-      - Write means you are allowed to rename, remove or create files in that directory. So even if you have write permissions on a file in that directory, you can modify it but cannot delete it unless you also have write permissions on its directory.
-      - Execute means you are allowed to search/enter (`cd`) the directory. You need to have execute permissions on a directory and all its parents to be able to enter it.
+      - The first bit is `d` for a directory, `l` for a link and `-` otherwise.
+      - The three groups of `rwx` bits display read, write and execute permissions for the owner, group and others respectively.
+      - The permissions are interpreted as follows for files:
+        - `r` means you can read or copy a file.
+        - `w` means you can edit the file.
+        - `x` means you can execute the file as a program.
+      - These permissions are interpreted differently for directories.
+        - `r` means you are allowed to see/list (`ls`) what files are in the directory.
+        - `w` means you are allowed to rename, move, remove or create files in that directory. So even if you have write permissions on a file in that directory, you can modify it but cannot delete it unless you also have write permissions on its directory.
+        - `x` means you are allowed to search/enter (`cd`) the directory to access the files in it. You need to have execute permissions on a directory and all its parents to be able to enter it.
       - A dash `-` means a lack of a permission.
     - `-R, --recursive`: List subdirectories recursively
     - `-s, --size`: Print the allocated size of each file, in blocks
@@ -143,10 +179,13 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 
 #### Permissions
 
-- `chmod`: To change permissions for a file. Can use symbols `u` (user that owns the file), `g` (the files group) and `o` (other users) and the permissions `r` (read), `w` (write) and `x` (execute).
+- `chmod`: For the owner to change permissions for a file.
+  - Can use symbols `u` (user that owns the file), `g` (the files group) and `o` (other users) and the permissions `r` (read), `w` (write) and `x` (execute).
   - Using `chmod u+x {filename}` will add execute permission for the owner of the file.
   - Can also encode the `ugo` permissions into 3 octals in range `{0-7}` each representing the `rwx` values, e.g., `chmod 764 {file}` gives read, write and execute permissions (111 = 7) to the user, read and write permissions (110 = 6) to the group, and read permissions (100 = 4) to others.
-- `chown`: Changes the user and/or group that owns a file, e.g., `sudo chown {username}:{grpname} {filename}` will change the owner to `{username}` and the group to `{grpname}`.
+- `chown`: For the superuser to change the user and/or group that owns a file.
+  - Syntax: `chown [-R] [[user]][:group] target1 [[target2 ..]]` where `-R` allows recursive changes within a speified target directory.
+  - E.g., `sudo chown {username}:{grpname} {filename}` will change the owner of `{filename}` to `{username}` and the group to `{grpname}`.
 
 #### Hard and Soft Links
 
@@ -186,7 +225,7 @@ A hard link:
 - `zip` (or `unzip`) can be used to compress (or extract) files into (or from) zip archives.
 - `tar` can also create tar archives for compression. To compress: `tar -cvzf {filename.tar.gz} [{dirname/}]`. To extract: `tar -xvzf {filename.tar.gz}`.
 
-#### Search and Processing
+#### Finding, Searching and Processing files
 
 - `grep`: Search inside files for certain search patterns, e.g. `grep "search" *.txt` will look in all the files in the current directory ending with `.txt` for the string `search`. `grep` supports regular expressions which allows special letter combinations to be included in the search. Some useful flags:
   - `-n`: Print line numbers from files where pattern matches
@@ -200,15 +239,31 @@ A hard link:
   - `-H`: Print file name with output lines
   - `-h`: Suppress the file name prefix with output
 - `awk`: A programming language useful for searching and manipulating text files.
-- `find`: Searches a directory and subdirectories for files matching certain patterns.
+- `find {path}`: Searches a path and subdirectories for files matching certain patterns.
   - `-user`: Can specify owning user.
-  - `-type f`: Can specify to only search for files.
+  - `-type`: Can specify `f` or `d` to find only files or directories respectively.
   - `-name {pattern}`: Can specify a pattern to match in the name.
+  - `-iname {pattern}`: Case-insensitive specification to match in the name.
   - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`.
+  - See this [link](http://www.devdaily.com/unix/edu/examples/find.shtml) for many useful examples of the `find` command.
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
 - `cut` allows you to cut and retrieve parts of files. E.g.: `cut -d " " -f 2 file.txt` chunks `file.txt` by the space delimiter and returns the second field/element. Do `man cut` to read more about different ways to cut and retrieve.
 - `sort {filename}` can sort all lines in a file. It can even take and sort lines from multiple files and merge them.
 - `wc {filename}` gives the line, word and character/byte count in a file. Can also use flags `-w`, `-l`, `-c` and `-m` to extract word count, line count, byte count and character count independently.
+
+#### Wildcards and Globbing
+
+Glob or globbing is used to refer to an instance of pattern matching behavior. To specify the pattern of file names, we can use the glob command. Refer to the following link for more details: http://linux.about.com/library/cmd/blcmdln_glob.htm.
+
+- `*` is a wildcard and matches 0 or more character(s) in a file (or directory) name. E.g., `ls *.py` lists all files ending in `.py` extension.
+- `?` matches exactly one character.
+- `[...]` matches any character in the character set. The set can be either a list of characters or a range separated with the hyphen character, e.g. `[1,2,3]` or `[a-z]`.
+
+These characters, e.g., `*`, `?` etc. are called meta-characters and have special meanings depending on the program that sees them, including the shell itself. When we intend for the shell to pass these meta-chracters to a program as-it-is without the shell processing them in special ways, we use Quoting. You put quotes around the inputs containing the meta-characters to tell the shell that they are not special - as far as the shell is concerned. When you quote a character, you ask the shell to leave it alone - and pass it on unchanged to the program. See a [quick tutorial](http://www.tutorialspoint.com/unix/unix-quoting-mechanisms.htm) and the [full guide](http://www.grymoire.com/Unix/Quote.html). There are four methods of quoting:
+- Single quote: All special characters between these quotes lose their special meaning.
+- Double quote: Most special characters between these quotes lose their special meaning except: `$` for parameter substitution, \` for command substitution, `\$` to enable literal dollar sign, `\'` to enable literal single quotes, \\\` to enable literal back quotes, `\"` to enable embedded double quotes, `\\` to enable embedded backslashes.
+- Backslash: Any character immediately following the backslash loses its special meaning.
+- Back quote: Anything in between back quotes would be treated as a command and would be executed.
 
 
 ## Networks
@@ -228,7 +283,7 @@ A hard link:
 #### SSH
 
 - `ssh` denotes Secure Shell to connect to another remote machine using an encrypted network connection. Example usage: `ssh {username}@{ipaddress}`. Type in your password next and connect to the `{ipaddress}`.
-- See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/) page for a brief SSH tutorial.
+- See [this](https://www.raspberrypi.com/documentation/computers/remote-access.html) page for a brief SSH tutorial.
 - **Passwordless SSH**: To configure your machine to ssh into another remote machine without typing a password every time, you need to use an SSH key. To generate an SSH key:
     - **Checking for Existing SSH Keys**: First, run `ls ~/.ssh`. If you see files named `id_rsa.pub` or `id_dsa.pub` then you have keys set up already, so you can skip the 'Generate new SSH keys' step below.
     - **Generate new SSH Keys**: Run `ssh-keygen`. You will be asked where to save the key with a recommended default location (`~/.ssh/id_rsa`). Press `Enter`. You can enter an optional passphrase to encrypt the private SSH key, so that if someone else copied the key, they could not impersonate you to gain access. Type a passphrase here or leave it empty for no passphrase and press `Enter`. Run `ls ~/.ssh` and you should see the files `id_rsa` and `id_rsa.pub`. The `id_rsa` file is your private key to be kept on your machine. The `id_rsa.pub` file is your public key to share with remote machines that you connect to. When the machine you try to connect to matches up your public and private key, it will allow you to connect.
@@ -238,8 +293,8 @@ A hard link:
 
 #### Download/upload files
 
-- `scp`: Copies files between different machines using `ssh`. See [this](https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md) link for a `scp` tutorial. Example usage: `scp {filename} {username}@{ipaddress}:{dirname}[/filename]`.
-- Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options. You can also download full websites this way.
+- `scp`: Copies files between different machines using `ssh`. Example usage: `scp {filename} {username}@{ipaddress}:{dirname}[/filename]`.
+- Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options. You can also download full websites this way with `wget -r {url}`.
 - `curl`: Download or upload a file to/from a server. By default, it will output the file contents to the screen.
 
 
@@ -287,10 +342,15 @@ The above examples all send the `SIGKILL` signal to the PID specified.
 
 - Kills process by process name, but can also match regular expressions. See `man pkill`.
 
-**Signals**:
+#### Signals
 
 - List all available signals without description: `kill -l` or `killall -l`.
 - If you need to convert a signal name into a signal number, or a signal number into a signal name: `kill -l 9` returns `KILL` or `kill -l kill` returns `9`.
+
+#### Executing programs without forking a new process
+
+The `exec` command replaces the current shell process with the specified command. Normally, when you run a command a new process is spawned (forked). The `exec` command is executed in place of the current shell without creating a new process. The command implements Unix exec system call.
+- `exec [command] [arg ...]`
 
 ## Users
 
@@ -379,7 +439,6 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
 
 ## Advanced Topics
 
-- Scheduling tasks can be done with Cron. See a good Cron tutorial [here](https://www.raspberrypi.org/documentation/linux/usage/cron.md).
-- In order to have a command or program run when the computer boots, you can add commands to the `rc.local` file. See more details [here](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md).
-- Use `systemd` to create services. See [this](https://www.raspberrypi.org/documentation/linux/usage/systemd.md) brief tutorial.
-- Setting aliases with `.bashrc` and `bash_aliases`: see [tutorial](https://www.raspberrypi.org/documentation/linux/usage/bashrc.md).
+- Scheduling tasks can be done with Cron. See a Cron tutorial [here](https://www.freecodecamp.org/news/cron-jobs-in-linux/).
+- In order to have a command or program run when the computer boots, you can access run control (rc) or add commands to the `rc.local` file. See more details [here](https://docs.oracle.com/cd/E19683-01/806-4073/6jd67r96g/index.html).
+- Use `systemd` to create services. See [this](https://medium.com/@benmorel/creating-a-linux-service-with-systemd-611b5c8b91d6) brief tutorial.
