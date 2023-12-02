@@ -13,6 +13,8 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 
 Terminal/Shell is used for typing and executing programs/commands. It is actually an interpreter which accepts a shell programming language syntax and looks to invoke programs if a written instruction cannot be matched to its expected language syntax.
 - **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
+- Commands take input via `STDIN` and/or via arguments, return output using STDOUT, errors through `STDERR`, and a `Return Code` to report errors in a more script-friendly manner.
+- The return code or exit status is the way scripts/commands have to communicate how execution went. A value of 0 usually means everything went OK; anything different from 0 means an error occurred.
 - The arguments to a command/program are separated with spaces.
 - Run `which <program-name>` to find out where you are running the program from.
 
@@ -27,35 +29,9 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - Most programs also support `--help` argument to display help.
 - `curl cheat.sh/{command}` gives a cheat sheet with common example usages of `command`.
 - If you don't understand a command, can use [explainshell](https://explainshell.com/) to get a helpful breakdown for it.
+- Since `man` pages contain extensive documentation, if you need brief and useful examples, you can also install [`tldr` pages](https://tldr.sh/).
 
-#### Shell Scripting
-
-- Commands can be combined together in a file which can then be executed.
-- Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
-- See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
-- The [`nano` editor](https://www.nano-editor.org/) is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
-- The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
-- `#` starts a comment in Bash, except if you use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) (`#!`). `!` has a special meaning even within double-quoted (") strings, but Bash treats single-quoted strings (') differently. See the Bash [quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html) manual page for more information.
-
-#### Variables
-
-- Variables store information and pass it from the shell to programs.
-- Programs look in the environment for particular variables and if they are found will use the values stored.
-- Some variables are set by the system, some by the users, yet others by the shell.
-
-- Variables are split into two categories: ENVIRONMENT variables and SHELL variables.
-  - Shell variables apply only to the current instance of the shell and are used to set short-term working conditions
-  - Environment variables have a farther reaching significance, and those set at login are valid for the duration of the session.
-  - Convention: Environment variables have `UPPER CASE` and shell variables have `lower case` names.
-  - Environment variables are set using the `setenv` command, displayed using the `printenv` or `env` commands, and unset using the `unsetenv` command. To show all environment variables, use: `printenv | less`.
-  - Shell variables are both set and displayed using the `set` command. They can be unset by using the `unset` command.
-
-- Examples:
-  - The shell looks for locations to find programs in the order listed in your `$PATH` environment variable. The `$PATH` environment variable is a colon-separated list of directories. You can append more directories to it by: `export PATH="$PATH:{new_dir}"`.
-  - The `$OSTYPE` environment variable has the current operating system that a user is using.
-  - `$history` is a shell variable. The value of this means how many shell commands to save, allowing users to scroll back through all the commands they have previously entered. Try `echo $history`.
-
-#### Bash Shortcuts
+#### Shortcuts
 
 - Use **Tab** to complete arguments or list all available commands.
 - Use `clear` to clear the terminal.
@@ -63,8 +39,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - Use **ctrl-r** to search through command history (after pressing, type to search, press **ctrl-r** repeatedly to cycle through more matches, press **Enter** to execute the found command, or hit the right arrow to put the result in the current line to allow editing).
 - Use **ctrl-a** to move cursor to beginning of line, **ctrl-e** to move cursor to end of line, **ctrl-k** to kill to the end of the line, **ctrl-l** to scroll down your terminal to a new command hiding all the content above. See `man readline` for all the default keybindings in Bash.
 - For editing long commands, after setting your editor (for example `export EDITOR=vim`), **ctrl-x** **ctrl-e** will open the current command in an editor for multi-line editing.
-- To see recent commands, use `history`. Follow with `!n` (where `n` is the command number) to execute again.
-- Use the `{}` shell operator to bunch things together. Example: `mkdir -p /home/user/tmp/{dir1,anotherdir,similardir}`.
+- To see recent commands, use `history`. Then type `!n` (where `n` is the command number) to execute that command again.
 - To terminate an active running command, press **ctrl-c**.
 - Use **ctrl-z** to suspend a process. When entered by a user, the currently running foreground process is sent a SIGTSTP signal, which generally causes the process to suspend its execution. The user can later continue the process execution (typically via `fg` command -- short for foreground) or run the process in background mode.
 - Use `alias` to add simple aliases for complex commands. E.g., you can add `alias gp='git push'` to your `.bashrc` file to define an alias `gp` for the `git push` command. Search more on setting aliases with `.bashrc` and `bash_aliases`.
@@ -84,19 +59,100 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
   - In the Bourne shell, you need to set the value of the keyword shell variable PS1. This is just a variable that is declared and initialized by the shell at start-up. Include in your `.profile` file: `export PS1; PS1="newprompt"`.
 
 
-## Constructing Commands
+## Shell Scripts
+
+- Commands can be combined together in a file which can then be executed.
+- Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
+- See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
+- The [`nano` editor](https://www.nano-editor.org/) is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
+- The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
+
+#### Variables
+
+- Variables store information and pass it from the shell to programs.
+- Programs look in the environment for particular variables and if they are found will use the values stored.
+- Some variables are set by the system, some by the users, yet others by the shell.
+
+- A user variable `foo` can be set to value `bar` like `foo=bar`.
+- You can check its value with `echo $foo`.
+- Spaces in bash are used to separate program arguments. So do not use spaces while assigning variables, e.g., `foo = bar`. This will try to call the command `foo` with arguments `=` and `bar` and hence give an error.
+
+- Other variables are split into two categories: ENVIRONMENT variables and SHELL variables.
+  - Shell variables apply only to the current instance of the shell and are used to set short-term working conditions
+  - Environment variables have a farther reaching significance, and those set at login are valid for the duration of the session.
+  - Convention: Environment variables have `UPPER CASE` and shell variables have `lower case` names.
+  - Environment variables are set using the `setenv` command, displayed using the `printenv` or `env` commands, and unset using the `unsetenv` command. To show all environment variables, use: `printenv | less`.
+  - Shell variables are both set and displayed using the `set` command. They can be unset by using the `unset` command.
+
+- Examples:
+  - The shell looks for locations to find programs in the order listed in your `$PATH` environment variable. The `$PATH` environment variable is a colon-separated list of directories. You can append more directories to it by: `export PATH="$PATH:{new_dir}"`.
+  - The `$OSTYPE` environment variable has the current operating system that a user is using.
+  - `$history` is a shell variable. The value of this means how many shell commands to save, allowing users to scroll back through all the commands they have previously entered. Try `echo $history`.
+
+#### Syntax and shortcuts
+
+- `#` starts a comment in Bash, except if you use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) (`#!`). `!` has a special meaning even within double-quoted (") strings.
+- A `#!` (shebang) tells the shell which program/interpreter is needed to run a script.
+  - It is usually the first line of a script, e.g., `#!/usr/bin/bash` or `#!/usr/bin/python`.
+  - If you don't want to assume where an interpreter is installed, you can instead use the `env` command (available in practically all unix-like systems with few exceptions), to search for a program in the path and then use it. E.g., `#!/usr/bin/env python`.
+- Use the `{}` shell operator to bunch things together.
+  - Example: `mkdir -p /home/user/tmp/{dir1,anotherdir,similardir}`.
+  - You can even do cartesian product this way, e.g., `mkdir -p ~/project{1,2}/file{1,2,3}.txt`.
+  - You can use ranges within `{}` too, e.g., `mkdir ~/file{a..d}.txt`
+- In bash, `$0` refers to the name of the script, while `$1` through `$9` refer to the next nine arguments passed.
+- `$#` gives you the number of arguments provided.
+- `$$` is the process ID of the currently running command.
+- `$@` expands to all the arguments given to the currently running command.
+- `$?` gives you the error code from the previous command.
+- `$_` gives you the last argument from the previous command.
+- `!!` (bang bang) is replaced with the last command, e.g., if you want to execute your previous command with `sudo`, you can do `sudo !!`.
+- `true` and `false` can be used in bash as keywords and commands and have `0` and `1` as their error codes respectively.
+- `||` is the `OR` operator in bash, e.g., `false || echo "oops"` will execute `false` first and only if it fails (which it will because it has a non-zero error-code), will it execute the second command.
+- `&&` is the `AND` operator, e.g., `false && echo "Will not be printed"` will not execute the `echo` command because `false` will return a non-zero exit code.
+- `;` is the concatenation operator in bash and can be used to execute multiple commands sequentially.
+
+- Command substitution: You can store the output of a command into a variable with `$()` operator, e.g., `foo=$(pwd)` stores the output of the `pwd` command in the variable `foo`.
+- You can store the output of a command to a temporary file and redirect that file as an input to another command with `<()` operator, e.g., `cat <(ls) <(ls ..)`.
+
+**Additional tips**:
+
+- You can install [`shellcheck`](https://github.com/koalaman/shellcheck) to check your scripts and give you useful tips about errors or how to write better shell programs.
+- Functions have to be in the same language as the shell, while scripts can be written in any language, e.g., `python`. This is why including a `shebang` for scripts is important.
+- Functions are loaded once when their definition is read. Scripts are loaded every time they are executed. This makes functions slightly faster to load, but whenever you change them you will have to reload their definition.
+- Functions are executed in the current shell environment whereas scripts execute in their own process. Thus, functions can modify environment variables, e.g. change your current directory, whereas scripts can’t. Scripts will be passed by value environment variables that have been exported using export. E.g., if you use `cd` in a script directly and execute it, you won't end up in that directory after you finish executing that script from your shell. But if you `source` that script, you will end up in that directory.
+- As with any programming language, functions are a powerful construct to achieve modularity, code reuse, and clarity of shell code. Often shell scripts will include their own function definitions.
+
+#### Wildcards and Globbing
+
+Glob or globbing is used to refer to an instance of pattern matching behavior. To specify the pattern of file names, we can use the glob command. Refer to the following link for more details: http://linux.about.com/library/cmd/blcmdln_glob.htm.
+
+- `*` is a wildcard and matches 0 or more character(s) in a file (or directory) name. E.g., `ls *.py` lists all files ending in `.py` extension.
+- `?` matches exactly one character.
+- `[...]` matches any character in the character set. The set can be either a list of characters or a range separated with the hyphen character, e.g. `[1,2,3]` or `[a-z]`.
+
+These characters, e.g., `*`, `?` etc. are called meta-characters and have special meanings depending on the program that sees them, including the shell itself. See this [link](https://tldp.org/LDP/abs/html/special-chars.html) for more such special characters. When we intend for the shell to pass these meta-chracters to a program as-it-is without the shell processing them in special ways, we use Quoting.
+
+#### Quoting
+
+You put quotes around the inputs containing the meta-characters to tell the shell that they are not special - as far as the shell is concerned. When you quote a character, you ask the shell to leave it alone - and pass it on unchanged to the program. See a [quick tutorial](http://www.tutorialspoint.com/unix/unix-quoting-mechanisms.htm) and the [full guide](http://www.grymoire.com/Unix/Quote.html). See the Bash [quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html) manual page for more information. Briefly, there are four methods of quoting:
+- Single quote: All special characters between these quotes lose their special meaning.
+- Double quote: Most special characters between these quotes lose their special meaning except: `$` for parameter substitution, \` for command substitution, `\$` to enable literal dollar sign, `\'` to enable literal single quotes, \\\` to enable literal back quotes, `\"` to enable embedded double quotes, `\\` to enable embedded backslashes.
+- Backslash: Any character immediately following the backslash loses its special meaning.
+- Back quote: Anything in between back quotes would be treated as a command and would be executed.
 
 #### Redirecting Input and Output
 
 - Most programs have an input stream (`stdin`), an output stream (`stdout`) and an error stream (`stderr`).
-- By default the input stream defaults to the keyboard and the output stream defaults to the terminal.
-- `>` and `<` can be used to redirect inputs and outputs of programs to a file.
+- By default the input stream defaults to the keyboard and the output and error streams default to the terminal. But these can be redirected to files.
   - `<` re-wires the input of the program to a file.
   - `>` re-wires the output of the program to a file.
   - `>>` appends the output to an existing file.
-  - TODO: Learn about stdout and stderr.
+  - `2>` re-wires the error of the program to a file.
+  - `&>` re-wires both `stdout` and `stderr` of the program to the same file.
+- `/dev/null` is a special file where anything you write is discarded. It's useful for redirecting outputs or errors of programs if you don't care about them, e.g., if you only care about successful execution of the program and its error code being 0.
 
 - A pipe `|` redirects output of a command as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
+- But commands can take input from both arguments and STDIN. When piping commands, we are connecting STDOUT of a command to STDIN of another command, but some commands like `tar` take inputs from arguments. To bridge this disconnect there’s the `xargs` command which will execute a command using STDIN as arguments.
 - Use `xargs` (or `parallel`) to build and execute command lines from standard input. This allows easily piping outputs of commands to others.
   - Note you can control how many processes execute in parallel with `-P`.
   - `-I{}` is handy for piping outputs into a subsequent command at the right location.
@@ -108,12 +164,45 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
   ```
 - Use `parallel` to build and execute shell command lines from standard input in parallel. Very useful to run jobs in parallel, without using loops in `sh` scripts. See the [manpage](https://manpages.ubuntu.com/manpages/impish/man1/parallel.1.html) for details.
 
+#### Functions
+
+- You can define functions in bash, e.g., make and change directory:
+  ```bash
+  mcd () {
+    mkdir -p "$1"
+    cd "$1"
+  }
+  ```
+- If you define this function in a file: `mcd.sh`, you can even load it with: `source mcd.sh` and then use the function in the shell directly.
+
+#### Conditional execution
+
+- You can write an `if-else` like:
+  ```bash
+  if [[ condition ]]; then
+    # statements
+  fi
+  ```
+- `[[ ]]` is a shell keyword for the shell built-in called `test` which is used for comparisons and checking, e.g., if two variables are equal or if a file exists or if a file exists and is a directory etc. `test` terminates with error code `0` (`true`) or error code `1` (`false`).
+  - not-equals example: `[[ "$foo" -ne 0 ]]`.
+  - When performing comparisons in `bash`, try to use double brackets `[[ ]]`` in favor of simple brackets `[ ]``. Chances of making mistakes are lower although it won’t be portable to `sh`. A more detailed explanation can be found [here](http://mywiki.wooledge.org/BashFAQ/031).
+  - Do `man test` to learn more comparison and testing operators for `bash`.
+
+#### Loops
+
+- You can write a `for` loop like:
+  ```bash
+  for file in "$@"; do
+    # Do something here
+  done
+  ```
+
 
 ## System Information
 
 - `hostname`: Displays the current hostname of the system. A superuser can set the hostname to a new one by supplying it as an argument (e.g. `hostname {newhost}`).
 - `lscpu`: Display details about your cpu architecture.
-- `date`: Get the current date and time.
+- `date`: Get the current date and time. Also allows specifying formats to get the result in.
 
 
 ## Root User/Superuser (sudo)
@@ -163,7 +252,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - `df`: Displays the disk space available and used on the mounted filesystems. Use `-h` for human-readable format for sizes.
 - `du`: Displays disk usage of a file or directory, e.g. `du -hd2 {dirname}` where `-h` flag makes sizes human-readable and `-d{number}` sets the recursion depth for subdirectories. E.g., checking disk usage of users: `sudo du -hd1 /home | sort -hr`. This lists all users' disk usage in human-readable format (-h) upto depth 1 (-d1) and pipes it to the sort tool to arrange the list in reverse order by size (-r).
 - inodes: Can check inodes of files with `ls -i` or `df -i`.
-- `tree`: Show a directory and all subdirectories and files indented as a tree structure.
+- `tree`: Show a directory and all subdirectories and files indented as a tree structure. Also see a fancier alternative called `broot`.
 - Your home directory: `/home/{username}/`. Can navigate to home folder:
   ```bash
   cd
@@ -238,34 +327,27 @@ A hard link:
   - `-m`: Maximum number of matches to output
   - `-H`: Print file name with output lines
   - `-h`: Suppress the file name prefix with output
+- `ripgrep` (invoked via `rg`) is a faster alternative to `grep` which recursively searches the current directory. Try `tldr rg`.
 - `awk`: A programming language useful for searching and manipulating text files.
+
 - `find {path}`: Searches a path and subdirectories for files matching certain patterns.
   - `-user`: Can specify owning user.
   - `-type`: Can specify `f` or `d` to find only files or directories respectively.
   - `-name {pattern}`: Can specify a pattern to match in the name.
   - `-iname {pattern}`: Case-insensitive specification to match in the name.
-  - A cool usage of `find` to find all files owned by a user: `find / -user <username> &> <filename>`.
+  - E.g., find all files owned by a user: `find / -user <username> &> <filename>`.
+  - E.g., find zip files with size in [500k, 10M]: `find . -size +500k -size -10M -name '*.tar.gz'`.
   - See this [link](http://www.devdaily.com/unix/edu/examples/find.shtml) for many useful examples of the `find` command.
+- You can also execute certain commands on all found files.
+  - E.g., remove them: `find ./ -name ".tmp" -exec rm {} \;`. The `;` ends the `-exec` option and needs to be escaped to protect it from interpretation by the shell.
+- There is also the [`fd`](https://github.com/sharkdp/fd) tool which aims to be faster and easier to use than `find`. Try `tldr fd`.
+
 - `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
 - `cut` allows you to cut and retrieve parts of files. E.g.: `cut -d " " -f 2 file.txt` chunks `file.txt` by the space delimiter and returns the second field/element. Do `man cut` to read more about different ways to cut and retrieve.
 - `sort {filename}` can sort all lines in a file. It can even take and sort lines from multiple files and merge them.
 - `wc {filename}` gives the line, word and character/byte count in a file. Can also use flags `-w`, `-l`, `-c` and `-m` to extract word count, line count, byte count and character count independently.
+- `diff` allows you to check differences between files or directories.
 - TODO: Learn to use `sed` for replacements in files.
-
-#### Wildcards and Globbing
-
-Glob or globbing is used to refer to an instance of pattern matching behavior. To specify the pattern of file names, we can use the glob command. Refer to the following link for more details: http://linux.about.com/library/cmd/blcmdln_glob.htm.
-
-- `*` is a wildcard and matches 0 or more character(s) in a file (or directory) name. E.g., `ls *.py` lists all files ending in `.py` extension.
-- `?` matches exactly one character.
-- `[...]` matches any character in the character set. The set can be either a list of characters or a range separated with the hyphen character, e.g. `[1,2,3]` or `[a-z]`.
-
-These characters, e.g., `*`, `?` etc. are called meta-characters and have special meanings depending on the program that sees them, including the shell itself. When we intend for the shell to pass these meta-chracters to a program as-it-is without the shell processing them in special ways, we use Quoting. You put quotes around the inputs containing the meta-characters to tell the shell that they are not special - as far as the shell is concerned. When you quote a character, you ask the shell to leave it alone - and pass it on unchanged to the program. See a [quick tutorial](http://www.tutorialspoint.com/unix/unix-quoting-mechanisms.htm) and the [full guide](http://www.grymoire.com/Unix/Quote.html). There are four methods of quoting:
-- Single quote: All special characters between these quotes lose their special meaning.
-- Double quote: Most special characters between these quotes lose their special meaning except: `$` for parameter substitution, \` for command substitution, `\$` to enable literal dollar sign, `\'` to enable literal single quotes, \\\` to enable literal back quotes, `\"` to enable embedded double quotes, `\\` to enable embedded backslashes.
-- Backslash: Any character immediately following the backslash loses its special meaning.
-- Back quote: Anything in between back quotes would be treated as a command and would be executed.
-
 
 ## Networks
 
@@ -355,6 +437,7 @@ The `exec` command replaces the current shell process with the specified command
 
 ## Users
 
+- `whoami`: Display your username.
 - Add new user: `sudo adduser {username}`
     - Can also use `useradd` to add a new user. `useradd` is native binary compiled with the system. `adduser` is a more user friendly and interactive perl script which uses `useradd` in back-end, but no difference in features.
     - Can use the `-e, --expiredate` option to specify an expiry date, e.g.: `sudo useradd -e 2020-07-30 {username}`.
@@ -424,12 +507,22 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
 
 ## Miscellaneous Stuff
 
-- Convert an image sequence into a video: `ffmpeg -framerate 30 -pattern_type glob -i '*.jpg' -c:v libx264 -pix_fmt yuv420p out.mp4`.
 - `spd-say <text>` sends text-to-speech output request to speech-dispatcher.
-- Merge multiple jpgs vertically: `convert pic1.jpg pic2.jpg pic3.jpg -append pic.jpg`
 - Show a zoomable world map: `telnet mapscii.me`.
 - `nvidia-smi`: Monitor nvidia gpu usage.
 - `watch`: Repeat a command periodically and update output on terminal. Example: `watch -n 5 nvidia-smi` monitors the gpu usage every 5 seconds.
+- `convert` tool allows many image manipulation operations from the shell. Some examples below:
+  - Convert `png` to `jpg`: `convert image.png image.jpg` or `convert image.{png,jpg}`.
+  - Merge multiple jpgs vertically: `convert pic1.jpg pic2.jpg pic3.jpg -append pic.jpg`.
+  - Scale an image to 50% size: `convert image.png -resize 50% output_image.png`.
+  - Create a GIF from a series of images with 100ms delay between them: `convert image1.png image2.png ... -delay 10 animation.gif`.
+  - Do `man convert` to learn more.
+- `ffmpeg` allows many video operations from the shell.
+  - Convert an image sequence into a video: `ffmpeg -framerate 30 -pattern_type glob -i '*.jpg' -c:v libx264 -pix_fmt yuv420p out.mp4`.
+  - Extract the sound from a video and save it as MP3: `ffmpeg -i video.mp4 -vn sound.mp3`.
+  - Combine numbered images into video or GIF: `ffmpeg -i frame_%d.jpg -f image2 video.mpg|video.gif`.
+  - Extract one frame from video at time `mm:ss` and save it as a 128x128 resolution image: `ffmpeg -ss mm:ss -i video.mp4 -frames 1 -s 128x128 -f image2 image.png`.
+  - Trim a video from start time `mm:ss` to end time `mm2:ss2` (omit `-to` flag to trim till the end): `ffmpeg -ss mm:ss -to mm2:ss2 -i video.mp4 -codec copy output.mp4`.
 
 #### Coding
 
@@ -439,12 +532,9 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
   - `cloc $(git ls-files)` for a git repo
 
 
-## Some Commands for MacOS
-
-Some useful commands specifically for MacOS can be found [here](cmd_macOS.md).
-
 ## Advanced Topics
 
 - Scheduling tasks can be done with Cron. See a Cron tutorial [here](https://www.freecodecamp.org/news/cron-jobs-in-linux/).
 - In order to have a command or program run when the computer boots, you can access run control (rc) or add commands to the `rc.local` file. See more details [here](https://docs.oracle.com/cd/E19683-01/806-4073/6jd67r96g/index.html).
 - Use `systemd` to create services. See [this](https://medium.com/@benmorel/creating-a-linux-service-with-systemd-611b5c8b91d6) brief tutorial.
+- Some useful commands specifically for MacOS can be found [here](cmd_macOS.md).
