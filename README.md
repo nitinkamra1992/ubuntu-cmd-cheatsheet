@@ -100,9 +100,9 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
   - You can even do cartesian product this way, e.g., `mkdir -p ~/project{1,2}/file{1,2,3}.txt`.
   - You can use ranges within `{}` too, e.g., `mkdir ~/file{a..d}.txt`
 - In bash, `$0` refers to the name of the script, while `$1` through `$9` refer to the next nine arguments passed.
-- `$#` gives you the number of arguments provided.
+- `$#` gives you the number of arguments provided (excluding `$0`).
 - `$$` is the process ID of the currently running command.
-- `$@` expands to all the arguments given to the currently running command.
+- `$@` expands to all the arguments given to the currently running command (excluding `$0`).
 - `$?` gives you the error code from the previous command.
 - `$_` gives you the last argument from the previous command.
 - `!!` (bang bang) is replaced with the last command, e.g., if you want to execute your previous command with `sudo`, you can do `sudo !!`.
@@ -196,6 +196,46 @@ You put quotes around the inputs containing the meta-characters to tell the shel
     # Do something here
   done
   ```
+
+#### Argument parsing
+
+- Manual argument parsing can be implemented in bash scripts by using the `shift` shell builtin, which operates on the positional parameters.
+- Each time we invoke shift, it "shifts" all the positional parameters down by one. `$2` becomes `$1`, `$3` becomes `$2`, and so on. See example:
+```bash
+#!/bin/bash
+
+echo "You start with $# positional parameters"
+# Loop until all parameters are used up
+while [ "$1" != "" ]; do
+    echo "Parameter 1 equals $1"
+    echo "You now have $# positional parameters"
+    # Shift all the parameters down by one
+    shift
+done
+```
+- Manual argument parsing can be done as follows with `shift`:
+```bash
+interactive=
+filename=default.html
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -f | --file )           shift
+                                filename="$1"
+                                ;;
+        -i | --interactive )    interactive=1
+                                ;;
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     usage
+                                exit 1
+    esac
+    shift
+done
+```
+
+- More complex argument parsing can be achieved with `getopt` tool. See this [short tutorial](https://www.baeldung.com/linux/bash-parse-command-line-arguments) or this [long tutorial](https://stackabuse.com/how-to-parse-command-line-arguments-in-bash/) for details on using `getopt`.
 
 
 ## System Information
