@@ -181,6 +181,10 @@ You put quotes around the inputs containing the meta-characters to tell the shel
   ```bash
   if [[ condition ]]; then
     # statements
+  elif [[ condition ]]; then
+    # statements
+  else
+    # statements
   fi
   ```
 - `[[ ]]` is a shell keyword for the shell built-in called `test` which is used for comparisons and checking, e.g., if two variables are equal or if a file exists or if a file exists and is a directory etc. `test` terminates with error code `0` (`true`) or error code `1` (`false`).
