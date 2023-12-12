@@ -13,6 +13,7 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 
 Terminal/Shell is used for typing and executing programs/commands. It is actually an interpreter which accepts a shell programming language syntax and looks to invoke programs if a written instruction cannot be matched to its expected language syntax.
 - **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
+- The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
 - Commands take input via `STDIN` and/or via arguments, return output using STDOUT, errors through `STDERR`, and a `Return Code` to report errors in a more script-friendly manner.
 - The return code or exit status is the way scripts/commands have to communicate how execution went. A value of 0 usually means everything went OK; anything different from 0 means an error occurred.
 - The arguments to a command/program are separated with spaces.
@@ -64,8 +65,9 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - Commands can be combined together in a file which can then be executed.
 - Bash is a popularly used language for scripting. Bash files have a `.sh` extension. You must make such a file executable by using `chmod` and then run it by typing `./{filename.sh}`.
 - See the [shell scripting tutorial](https://www.shellscript.sh/) for more details.
-- The [`nano` editor](https://www.nano-editor.org/) is a simple editor for basic terminal-editing (opening, editing, saving, searching). For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor.
-- The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
+
+- The [`nano` editor](https://www.nano-editor.org/) is a simple editor for basic terminal-editing (opening, editing, saving, searching).
+- For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor. See this basic [vim tutorial](vim.md).
 
 #### Variables
 
@@ -126,7 +128,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 
 Glob or globbing is used to refer to an instance of pattern matching behavior. To specify the pattern of file names, we can use the glob command. Refer to the following link for more details: http://linux.about.com/library/cmd/blcmdln_glob.htm.
 
-- `*` is a wildcard and matches 0 or more character(s) in a file (or directory) name. E.g., `ls *.py` lists all files ending in `.py` extension.
+- `*` is a wildcard and matches 0 or more character(s). E.g., `ls *.py` lists all files ending in `.py` extension.
 - `?` matches exactly one character.
 - `[...]` matches any character in the character set. The set can be either a list of characters or a range separated with the hyphen character, e.g. `[1,2,3]` or `[a-z]`.
 
