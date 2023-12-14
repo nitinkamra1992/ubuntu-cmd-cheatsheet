@@ -2,7 +2,7 @@
 
 This repository contains a cheatsheet of commands for Ubuntu/Linux from various sources for quick reference. It also has links to useful tutorials for topics which cannot be summarized in a small cheatsheet.
 
-#### Sources
+### Sources
 
 - [The Art of Command Line](https://github.com/jlevy/the-art-of-command-line)
 - [MIT - The missing semester of your CS education](https://missing.csail.mit.edu/)
@@ -12,14 +12,14 @@ This repository contains a cheatsheet of commands for Ubuntu/Linux from various 
 ## Basics of a Terminal/Shell
 
 Terminal/Shell is used for typing and executing programs/commands. It is actually an interpreter which accepts a shell programming language syntax and looks to invoke programs if a written instruction cannot be matched to its expected language syntax.
-- **echo**: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
+- `echo`: Display a line of text, e.g. `echo hello world` or `echo "hello world"`.
 - The `$SHELL` environment variable will tell you which shell you are using: `echo $SHELL`.
 - Commands take input via `STDIN` and/or via arguments, return output using STDOUT, errors through `STDERR`, and a `Return Code` to report errors in a more script-friendly manner.
 - The return code or exit status is the way scripts/commands have to communicate how execution went. A value of 0 usually means everything went OK; anything different from 0 means an error occurred.
 - The arguments to a command/program are separated with spaces.
 - Run `which <program-name>` to find out where you are running the program from.
 
-#### Finding Help
+### Finding Help
 
 - Use `man {command}` to display a manual for a command. Try `man man`! Press `q` to exit.
 - Manual pages have a short description. Use `apropos {keyword}` to search the descriptions for instances of `keyword`.
@@ -32,7 +32,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - If you don't understand a command, can use [explainshell](https://explainshell.com/) to get a helpful breakdown for it.
 - Since `man` pages contain extensive documentation, if you need brief and useful examples, you can also install [`tldr` pages](https://tldr.sh/).
 
-#### Shortcuts
+### Shortcuts
 
 - Use **Tab** to complete arguments or list all available commands.
 - Use `clear` to clear the terminal.
@@ -45,7 +45,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - Use **ctrl-z** to suspend a process. When entered by a user, the currently running foreground process is sent a SIGTSTP signal, which generally causes the process to suspend its execution. The user can later continue the process execution (typically via `fg` command -- short for foreground) or run the process in background mode.
 - Use `alias` to add simple aliases for complex commands. E.g., you can add `alias gp='git push'` to your `.bashrc` file to define an alias `gp` for the `git push` command. Search more on setting aliases with `.bashrc` and `bash_aliases`.
 
-#### Shell Prompt
+### Shell Prompt
 
 - Shell, when used from a terminal, issues a prompt before reading a command.
 - Typically, a `%`` indicates the C shell (csh) and a `$`` indicates the Bourne shell (sh).
@@ -69,7 +69,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - The [`nano` editor](https://www.nano-editor.org/) is a simple editor for basic terminal-editing (opening, editing, saving, searching).
 - For power users in a text terminal, learning Vim (vi) is recommended. It is a hard-to-learn but venerable, fast, and full-featured editor. See this basic [vim tutorial](vim.md).
 
-#### Variables
+### Variables
 
 - Variables store information and pass it from the shell to programs.
 - Programs look in the environment for particular variables and if they are found will use the values stored.
@@ -91,7 +91,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
   - The `$OSTYPE` environment variable has the current operating system that a user is using.
   - `$history` is a shell variable. The value of this means how many shell commands to save, allowing users to scroll back through all the commands they have previously entered. Try `echo $history`.
 
-#### Syntax and shortcuts
+### Syntax and shortcuts
 
 - `#` starts a comment in Bash, except if you use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) (`#!`). `!` has a special meaning even within double-quoted (") strings.
 - A `#!` (shebang) tells the shell which program/interpreter is needed to run a script.
@@ -113,10 +113,12 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - `&&` is the `AND` operator, e.g., `false && echo "Will not be printed"` will not execute the `echo` command because `false` will return a non-zero exit code.
 - `;` is the concatenation operator in bash and can be used to execute multiple commands sequentially.
 
-- Command substitution: You can store the output of a command into a variable with `$()` operator, e.g., `foo=$(pwd)` stores the output of the `pwd` command in the variable `foo`.
+#### Command substitution
+
+- You can store the output of a command into a variable with `$()` operator, e.g., `foo=$(pwd)` stores the output of the `pwd` command in the variable `foo`.
 - You can store the output of a command to a temporary file and redirect that file as an input to another command with `<()` operator, e.g., `cat <(ls) <(ls ..)`.
 
-**Additional tips**:
+#### Additional tips
 
 - You can install [`shellcheck`](https://github.com/koalaman/shellcheck) to check your scripts and give you useful tips about errors or how to write better shell programs.
 - Functions have to be in the same language as the shell, while scripts can be written in any language, e.g., `python`. This is why including a `shebang` for scripts is important.
@@ -124,7 +126,7 @@ Terminal/Shell is used for typing and executing programs/commands. It is actuall
 - Functions are executed in the current shell environment whereas scripts execute in their own process. Thus, functions can modify environment variables, e.g. change your current directory, whereas scripts can’t. Scripts will be passed by value environment variables that have been exported using export. E.g., if you use `cd` in a script directly and execute it, you won't end up in that directory after you finish executing that script from your shell. But if you `source` that script, you will end up in that directory.
 - As with any programming language, functions are a powerful construct to achieve modularity, code reuse, and clarity of shell code. Often shell scripts will include their own function definitions.
 
-#### Wildcards and Globbing
+### Wildcards and Globbing
 
 Glob or globbing is used to refer to an instance of pattern matching behavior. To specify the pattern of file names, we can use the glob command. Refer to the following link for more details: http://linux.about.com/library/cmd/blcmdln_glob.htm.
 
@@ -134,7 +136,7 @@ Glob or globbing is used to refer to an instance of pattern matching behavior. T
 
 These characters, e.g., `*`, `?` etc. are called meta-characters and have special meanings depending on the program that sees them, including the shell itself. See this [link](https://tldp.org/LDP/abs/html/special-chars.html) for more such special characters. When we intend for the shell to pass these meta-chracters to a program as-it-is without the shell processing them in special ways, we use Quoting.
 
-#### Quoting
+### Quoting
 
 You put quotes around the inputs containing the meta-characters to tell the shell that they are not special - as far as the shell is concerned. When you quote a character, you ask the shell to leave it alone - and pass it on unchanged to the program. See a [quick tutorial](http://www.tutorialspoint.com/unix/unix-quoting-mechanisms.htm) and the [full guide](http://www.grymoire.com/Unix/Quote.html). See the Bash [quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html) manual page for more information. Briefly, there are four methods of quoting:
 - Single quote: All special characters between these quotes lose their special meaning.
@@ -142,7 +144,7 @@ You put quotes around the inputs containing the meta-characters to tell the shel
 - Backslash: Any character immediately following the backslash loses its special meaning.
 - Back quote: Anything in between back quotes would be treated as a command and would be executed.
 
-#### Redirecting Input and Output
+### Redirecting Input and Output
 
 - Most programs have an input stream (`stdin`), an output stream (`stdout`) and an error stream (`stderr`).
 - By default the input stream defaults to the keyboard and the output and error streams default to the terminal. But these can be redirected to files.
@@ -153,20 +155,23 @@ You put quotes around the inputs containing the meta-characters to tell the shel
   - `&>` re-wires both `stdout` and `stderr` of the program to the same file.
 - `/dev/null` is a special file where anything you write is discarded. It's useful for redirecting outputs or errors of programs if you don't care about them, e.g., if you only care about successful execution of the program and its error code being 0.
 
+#### pipe
+
 - A pipe `|` redirects output of a command as the input for another command. E.g., to only show the first ten entries of the `ls` command, it can be piped through the head command: `ls | head`.
-- But commands can take input from both arguments and STDIN. When piping commands, we are connecting STDOUT of a command to STDIN of another command, but some commands like `tar` take inputs from arguments. To bridge this disconnect there’s the `xargs` command which will execute a command using STDIN as arguments.
-- Use `xargs` (or `parallel`) to build and execute command lines from standard input. This allows easily piping outputs of commands to others.
+- Commands can take input from both arguments and STDIN. When piping commands, we are connecting STDOUT of a command to STDIN of another command.
+- When programs take input from files or produce output in files, you can use `-` instead of the input or output file name to tell them to take input from `stdin` or output to `stdout`. This is helpful for chaining commands with pipes. Example:
+  - `ffmpeg -i video.mp4 -frames 1 -f image2 - | convert - -colorspace gray - | gzip`. Here, the first `-` tells `ffmpeg` to write to `stdout` instead of to a file. The subsequent `-`s tell `convert` tool to read and write from `stdin` and `stdout` too.
+
+#### xargs
+
+- But some commands like `tar` take inputs from arguments. To bridge this disconnect there’s the `xargs` command.
+- `xargs` converts STDIN (or another piped stream) into a list of arguments and uses it to execute another command. Example: `find ./ -name '*.py' | xargs grep -nr <pattern>` finds all python files and searches for a pattern in them.
+- Use `xargs` to build and execute command lines from standard input. This allows easily piping outputs of commands to other commands as arguments.
   - Note you can control how many processes execute in parallel with `-P`.
-  - `-I{}` is handy for piping outputs into a subsequent command at the right location.
+  - `-I{}` is handy for piping outputs into a subsequent command at the right location and running the command multiple times. Example: `cat ./hostnames.txt | xargs -I{} ssh root@{} hostname` will run the `ssh` command with each hostname in `hostnames.txt` once.
+- Alternatively, use `parallel` to build and execute shell command lines from standard input in parallel. Very useful to run jobs in parallel, without using loops in `sh` scripts. See the [manpage](https://manpages.ubuntu.com/manpages/impish/man1/parallel.1.html) for details.
 
-  Examples:
-  ```bash
-        find ./ -name '*.py' | xargs grep -nr <pattern>
-        cat ./hostnames.txt | xargs -I{} ssh root@{} hostname
-  ```
-- Use `parallel` to build and execute shell command lines from standard input in parallel. Very useful to run jobs in parallel, without using loops in `sh` scripts. See the [manpage](https://manpages.ubuntu.com/manpages/impish/man1/parallel.1.html) for details.
-
-#### Functions
+### Functions
 
 - You can define functions in bash, e.g., make and change directory:
   ```bash
@@ -177,7 +182,7 @@ You put quotes around the inputs containing the meta-characters to tell the shel
   ```
 - If you define this function in a file: `mcd.sh`, you can even load it with: `source mcd.sh` and then use the function in the shell directly.
 
-#### Conditional execution
+### Conditional execution
 
 - You can write an `if-else` like:
   ```bash
@@ -194,7 +199,7 @@ You put quotes around the inputs containing the meta-characters to tell the shel
   - When performing comparisons in `bash`, try to use double brackets `[[ ]]`` in favor of simple brackets `[ ]``. Chances of making mistakes are lower although it won’t be portable to `sh`. A more detailed explanation can be found [here](http://mywiki.wooledge.org/BashFAQ/031).
   - Do `man test` to learn more comparison and testing operators for `bash`.
 
-#### Loops
+### Loops
 
 - You can write a `for` loop like:
   ```bash
@@ -203,7 +208,7 @@ You put quotes around the inputs containing the meta-characters to tell the shel
   done
   ```
 
-#### Argument parsing
+### Argument parsing
 
 - Manual argument parsing can be implemented in bash scripts by using the `shift` shell builtin, which operates on the positional parameters.
 - Each time we invoke shift, it "shifts" all the positional parameters down by one. `$2` becomes `$1`, `$3` becomes `$2`, and so on. See example:
@@ -294,7 +299,7 @@ done
 - `cat`: List the contents of file or multiple files, e.g. `cat {filename}` or `cat *.txt`. `cat` actually concatenates its input files into a single output.
 - `head {filename}`: Displays the beginning of a file. Use `-n` to specify the number of lines to show (default: 10) or `-c` to specify the number of bytes.
 - `tail {filename}`: Displays the end of a file. The starting point in the file can be specified either through `-c` for bytes or `-n` for number of lines. `tail -f {filename}` allows viewing growing files.
-- `less {filename}`: Command line utility to display contents of a file or command output, one page at a time and allows navigating both forward and backward. It doesn’t read the entire file, leading to faster load times compared to text editors like vim or nano. Hence, it is mostly used for opening large files. `less +F` allows viewing growing files.
+- `less {filename}`: Command line utility to display contents of a file or command output, one page at a time and allows navigating both forward and backward. It doesn’t read the entire file, leading to faster load times compared to text editors like vim or nano. Hence, it is mostly used for opening large files. `less +F` allows viewing growing files.q
 - `df`: Displays the disk space available and used on the mounted filesystems. Use `-h` for human-readable format for sizes.
 - `du`: Displays disk usage of a file or directory, e.g. `du -hd2 {dirname}` where `-h` flag makes sizes human-readable and `-d{number}` sets the recursion depth for subdirectories. E.g., checking disk usage of users: `sudo du -hd1 /home | sort -hr`. This lists all users' disk usage in human-readable format (-h) upto depth 1 (-d1) and pipes it to the sort tool to arrange the list in reverse order by size (-r).
 - inodes: Can check inodes of files with `ls -i` or `df -i`.
@@ -312,7 +317,7 @@ done
 - `xdg-open {filename}` opens files from a shell. By default, it'll use the default application for that file. If the file is in the form of a URL, the file will be opened as a URL. In MacOS, just use `open {filename}` instead.
 - `touch {filename}` sets the modification and access times of files. If `{filename}` does not exist, it is created with default permissions.
 
-#### Permissions
+### Permissions
 
 - `chmod`: For the owner to change permissions for a file.
   - Can use symbols `u` (user that owns the file), `g` (the files group) and `o` (other users) and the permissions `r` (read), `w` (write) and `x` (execute).
@@ -322,7 +327,7 @@ done
   - Syntax: `chown [-R] [[user]][:group] target1 [[target2 ..]]` where `-R` allows recursive changes within a speified target directory.
   - E.g., `sudo chown {username}:{grpname} {filename}` will change the owner of `{filename}` to `{username}` and the group to `{grpname}`.
 
-#### Hard and Soft Links
+### Hard and Soft Links
 
 A symbolic or soft link is a special sort of file that points to a different file's path (like shortcuts in Windows). A hard link, on the other hand, points to the exact inode (memory address) of the original file.
 
@@ -346,7 +351,7 @@ A hard link:
 - points to the actual contents of original file, so you can still view the contents, even if the original file is moved or removed
 - created by `ln {source} {hardlink}`
 
-#### File Systems
+### File Systems
 
 - The `mount` command attaches the filesystem on some device to your device's file tree. The `umount` command detaches it.
   - Attach with `mount {device} {dir}`.
@@ -355,26 +360,32 @@ A hard link:
 - `mkfs`: Build a Linux filesystem
 - `lsblk`: List block devices. Great for listing partitions and their sizes.
 
-#### Compression
+### Compression
 
 - `zip` (or `unzip`) can be used to compress (or extract) files into (or from) zip archives.
 - `tar` can also create tar archives for compression. To compress: `tar -cvzf {filename.tar.gz} [{dirname/}]`. To extract: `tar -xvzf {filename.tar.gz}`.
 
-#### Finding, Searching and Processing files
+### Finding, Searching and Processing files
+
+#### grep
 
 - `grep`: Search inside files for certain search patterns, e.g. `grep "search" *.txt` will look in all the files in the current directory ending with `.txt` for the string `search`. `grep` supports regular expressions which allows special letter combinations to be included in the search. Some useful flags:
   - `-n`: Print line numbers from files where pattern matches
   - `-r`: Recursive flag (for directories)
   - `-w`: Match only whole words
   - `-x`: Match only whole lines
-  - `-v`: Select non-matching lines
+  - `-v`: Select lines which do not match any of the patterns specified
   - `-f`: Specify the file containing the patterns to search for
   - `-i`: Ignore case in patterns and data
   - `-m`: Maximum number of matches to output
   - `-H`: Print file name with output lines
   - `-h`: Suppress the file name prefix with output
+  - `-o`: Prints only the matching part of lines
 - `ripgrep` (invoked via `rg`) is a faster alternative to `grep` which recursively searches the current directory. Try `tldr rg`.
-- `awk`: A programming language useful for searching and manipulating text files.
+
+- `tr` is a utility for string processing. Do `man tr`.
+
+#### find
 
 - `find {path}`: Searches a path and subdirectories for files matching certain patterns.
   - `-user`: Can specify owning user.
@@ -388,12 +399,49 @@ A hard link:
   - E.g., remove them: `find ./ -name ".tmp" -exec rm {} \;`. The `;` ends the `-exec` option and needs to be escaped to protect it from interpretation by the shell.
 - There is also the [`fd`](https://github.com/sharkdp/fd) tool which aims to be faster and easier to use than `find`. Try `tldr fd`.
 
-- `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
+#### sed
+
+- `sed` (stream editor) is a programming language to edit streams.
+- But its best used for making replacements on expressions in files or streams with the `s` command.
+- `sed 's/foo/bar/' {file}` substitutes the first occurence of "foo" with "bar" in every line of `{file}`.
+- sed commands can be chained with `;`. E.g.,
+  - `sed 's/foo/bar/; s/ /_' {file}` replaces the first instance of "foo" with "bar" in all lines of `{file}`. It then replaces the first space of each line with an underscore.
+- The `g` flag replaces all instances in every line instead of the first, e.g., `sed 's/foo/bar/g'`.
+- The search patterns accept regular expressions, e.g.,
+  - `echo 'bcbzac' | sed 's/[ab]//g'` replaces all instances of "a" or "b" from the echoed stream "bcbzac".
+  - `echo 'abcaba' | sed 's/\(ab\)//g` or `echo 'abcaba' | sed -E 's/(ab)//g'` replaces all instances of "ab" from the echoed stream "abcaba".
+  - `sed` by default uses standard regular expressions, but the `-E` flag above lets it uses extended (modern) regular expressions.
+- `sed` can also do other stuff like injecting text (`i` command), printing lines (`p` command), selecting lines by index etc. Do `man sed`.
+
+#### awk
+
+- `awk` is a column-based stream processing language and allows operating on whitespace separated columnar data.
+- It is actually a full programming language but operating on columnar data is its best use-case.
+- `awk` programs take the form of an optional pattern plus a block saying what to do if the pattern matches a given line. Examples:
+  - `awk '{print $2}' {file}` will print the second column of file. The default pattern (which we used here) matches all lines. Inside the `{...}` block, `$0` is set to the entire line’s contents, and `$1` through `$n` are set to the n-th field (column) of that line, when separated by the `awk` field separator (whitespace by default, change with `-F`). In this case, for every line, it'll print the contents of the second field (column).
+  - `awk '$1 == 1 && $2 ~ /^c.*e$/ {print $0}' {file}` prints the full line (`{print $0}`) where the first column is "1" (`$1 == 1`) and the second column matches the regular expression `/^c.*e$/` i.e. the second column value starts with "c" and ends with "e". Notice that we now have a pattern (the stuff that goes before {...}).
+  - To count how many such rows exist, `awk 'BEGIN { rows = 0 } $1 == 1 && $2 ~ /^c.*e$/ {rows += 1} END { print rows }' {file}`. Here `BEGIN` and `END` are patterns which only match the beginning and end of the input respectively. So the statements following them (initializing and printing `rows`) are only executed at the beginning and end of the file. The intermediate statements for column checking and incrementing `rows` are executed after each row.
+
+#### cut and paste
+
 - `cut` allows you to cut and retrieve parts of files. E.g.: `cut -d " " -f 2 file.txt` chunks `file.txt` by the space delimiter and returns the second field/element. Do `man cut` to read more about different ways to cut and retrieve.
+- `paste` is used to process lines of a file and often to concatenate them into a single line.
+  - `-s` option concatenates each line in a file separated by a tab.
+  - `-d` allows specifying a different delimiter other than tab.
+
+#### Others
+
+- `whereis {command}` finds the location of a command. It looks through standard program locations until it finds the requested command.
 - `sort {filename}` can sort all lines in a file. It can even take and sort lines from multiple files and merge them.
+  - Option `-r` reverses the sort.
+  - Option `-n` allows numeric sort (instead of lexicographic).
+  - Option `-k` allows specifying a whitespace-separated column to use as key for sorting. Also has syntax to support or column ranges multiple columns for subsequent sorts.
+- `uniq {filename}` extracts only the unique lines in a file.
+  - It only compares adjacent lines so the file must be sorted first.
+  - `-c` also prints the count for all unique lines found.
 - `wc {filename}` gives the line, word and character/byte count in a file. Can also use flags `-w`, `-l`, `-c` and `-m` to extract word count, line count, byte count and character count independently.
 - `diff` allows you to check differences between files or directories.
-- TODO: Learn to use `sed` for replacements in files.
+
 
 ## Networks
 
@@ -409,7 +457,7 @@ A hard link:
 - `dig`: TODO: Learn more.
 - `route`: TODO: Learn more.
 
-#### SSH
+### SSH
 
 - `ssh` denotes Secure Shell to connect to another remote machine using an encrypted network connection. Example usage: `ssh {username}@{ipaddress}`. Type in your password next and connect to the `{ipaddress}`.
 - See [this](https://www.raspberrypi.com/documentation/computers/remote-access.html) page for a brief SSH tutorial.
@@ -420,7 +468,7 @@ A hard link:
     - Now try `ssh {username}@{ipaddress}` to connect without a password prompt.
     - TODO: Find out more about basics of passwordless authentication, via `ssh-agent`, `ssh-add`, etc.
 
-#### Download/upload files
+### Download/upload files
 
 - `scp`: Copies files between different machines using `ssh`. Example usage: `scp {filename} {username}@{ipaddress}:{dirname}[/filename]`.
 - Download a file from the web directly to the computer with `wget`, e.g. `wget https://www.raspberrypi.org/documentation/linux/usage/commands.md` will download the file to your computer as `commands.md`. See `wget --help` or `man wget` for more options. You can also download full websites this way with `wget -r {url}`.
@@ -439,11 +487,11 @@ A hard link:
   - If there are more than one job suspended in the background, use the command: `fg {job_number}`.
   - The job numbers are shown in the first column of the output of the `jobs` command.
 
-#### Killing processes
+### Killing processes
 
 `kill`, `pkill` and `killall` can be used to terminate or send specific system signals to processes.
 
-##### killall
+#### killall
 
 - Terminate running processes based on name: `killall [pname]`. `killall` will terminate all programs that match the name specified.
 - Without additional arguments, it sends `SIGTERM`, or signal number 15, which terminates running processes that match the name specified. You may specify a different signal as follows:
@@ -456,7 +504,7 @@ killall -9 [pname]
 All the above send the `SIGKILL` signal which is more successful at ending a particularly unruly processes.
 - `-w` causes `killall` to wait until the process terminates.
 
-##### kill
+#### kill
 
 - Terminate processes based on PID: `kill {PID}` or job_number: `kill {job_number}`.
 - Without options, `kill` sends `SIGTERM` to the PID specified and asks the application or service to shut itself down.
@@ -467,16 +515,16 @@ kill -KILL [PID]
 ```
 The above examples all send the `SIGKILL` signal to the PID specified.
 
-##### pkill
+#### pkill
 
 - Kills process by process name, but can also match regular expressions. See `man pkill`.
 
-#### Signals
+### Signals
 
 - List all available signals without description: `kill -l` or `killall -l`.
 - If you need to convert a signal name into a signal number, or a signal number into a signal name: `kill -l 9` returns `KILL` or `kill -l kill` returns `9`.
 
-#### Executing programs without forking a new process
+### Executing programs without forking a new process
 
 The `exec` command replaces the current shell process with the specified command. Normally, when you run a command a new process is spawned (forked). The `exec` command is executed in place of the current shell without creating a new process. The command implements Unix exec system call.
 - `exec [command] [arg ...]`
@@ -553,16 +601,17 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
 
 ## Miscellaneous Stuff
 
-- `spd-say <text>` sends text-to-speech output request to speech-dispatcher.
-- Show a zoomable world map: `telnet mapscii.me`.
-- `nvidia-smi`: Monitor nvidia gpu usage.
-- `watch`: Repeat a command periodically and update output on terminal. Example: `watch -n 5 nvidia-smi` monitors the gpu usage every 5 seconds.
+### Images
+
 - `convert` tool allows many image manipulation operations from the shell. Some examples below:
   - Convert `png` to `jpg`: `convert image.png image.jpg` or `convert image.{png,jpg}`.
   - Merge multiple jpgs vertically: `convert pic1.jpg pic2.jpg pic3.jpg -append pic.jpg`.
   - Scale an image to 50% size: `convert image.png -resize 50% output_image.png`.
   - Create a GIF from a series of images with 100ms delay between them: `convert image1.png image2.png ... -delay 10 animation.gif`.
   - Do `man convert` to learn more.
+
+### Videos
+
 - `ffmpeg` allows many video operations from the shell.
   - Convert an image sequence into a video: `ffmpeg -framerate 30 -pattern_type glob -i '*.jpg' -c:v libx264 -pix_fmt yuv420p out.mp4`.
   - Extract the sound from a video and save it as MP3: `ffmpeg -i video.mp4 -vn sound.mp3`.
@@ -570,12 +619,74 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
   - Extract one frame from video at time `mm:ss` and save it as a 128x128 resolution image: `ffmpeg -ss mm:ss -i video.mp4 -frames 1 -s 128x128 -f image2 image.png`.
   - Trim a video from start time `mm:ss` to end time `mm2:ss2` (omit `-to` flag to trim till the end): `ffmpeg -ss mm:ss -to mm2:ss2 -i video.mp4 -codec copy output.mp4`.
 
-#### Coding
+### Calculator
+
+- `bc` starts the berkeley calculator on the terminal.
+- It can also read input from files and streams, e.g., `echo "2+3" | bc`.
+- Preferable to always use with `-l` option so it loads standard math libraries too.
+- Examples:
+  - Add all numbers in a file with one number in each line: `cat file.txt | paste -sd+ | bc -l`.
+  - More elaborate expressions: `echo "2*($(data | paste -sd+))" | bc -l`.
+
+### Plotting
+
+- `gnupplot` is a commnad-line plotting tool plus language.
+- Learn more about it by looking for a tutorial.
+
+### Speech
+
+- `spd-say <text>` sends text-to-speech output request to speech-dispatcher.
+
+### Coding
 
 - Version control tools are useful for coding. [TODO] Learn more about `git` by googling for a good tutorial.
 - `cloc` can be used to count lines of code in a directory, project or file. Examples:
   - `cloc ./` for a directory
   - `cloc $(git ls-files)` for a git repo
+
+### Regular expressions
+
+- Regular expressions are usually (though not always) surrounded by `/`.
+- Most ASCII characters just carry their normal meaning, but some characters have “special” matching behavior.
+- Exactly which characters do what vary somewhat between different implementations of regular expressions, which is a source of great frustration.
+- Very common patterns are:
+  - `.` matches any single character, except newline.
+  - `*` matches 0 or more of the preceding match.
+    - So `.*` means match 0 or more of any characters.
+    - `*` is greedy so it tries to match as much as possible by default. If this is not desired, use `*?` instead to stop at the first possible match found.
+  - `+` matches 1 or more of the preceding match (suffixing with `?` makes it non-greedy).
+  - `?` matches 0 or 1 of the previous character.
+  - `^` matches the beginning of a line.
+  - `$` matches the end of a line.
+  - `[...]` matches any of the characters in the square braces, e.g., `[ab]` can match "a" or "b".
+  - `(...)` forms a capture group which matches only the sequence inside the parentheses. So `(abc)` will match only "abc". The matching parts of these capture groups can be retrieved from the full match.
+  - `|` specifies OR within a capture group, e.g., `(ab|bc)` matches "ab" or "bc".
+  - `\s` matches any whitespace character (Use `[[:space:]]` instead on non-GNU programs, like in macOS).
+
+#### Matches
+
+Regular expressions match in a single line by default. They don't match across lines.
+- `\0` refers to the full exact match found.
+- `\1` refers to the match found for capture group 1.
+- `\2` refers to the match found for capture group 2 and so on.
+
+#### Debugging
+
+- You can use free online debugging tools like [regex101](https://regex101.com/) for building and debugging your regular expressions.
+
+#### Resources
+
+Learn more about regular expressions with [this](https://regexone.com/) tutorial.
+
+### Others
+
+- Show a zoomable world map: `telnet mapscii.me`.
+- `nvidia-smi`: Monitor nvidia gpu usage.
+- `watch`: Repeat a command periodically and update output on terminal. Example: `watch -n 5 nvidia-smi` monitors the gpu usage every 5 seconds.
+- `/usr/share/dict/words` contains a dictionary of words.
+- `journalctl` keeps system logs on linux (use `log show` on macOS).
+  - This is a huge continuously growing file, so might need `less` to view it.
+  - Use the help options for the commands to learn more.
 
 
 ## Advanced Topics
