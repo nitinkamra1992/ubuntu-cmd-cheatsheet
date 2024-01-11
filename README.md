@@ -628,6 +628,19 @@ Use `pip` to install `python` packages. See a detailed tutorial [here](https://r
   - Add all numbers in a file with one number in each line: `cat file.txt | paste -sd+ | bc -l`.
   - More elaborate expressions: `echo "2*($(data | paste -sd+))" | bc -l`.
 
+### Calendar
+
+- Install a command-line calendar with `sudo apt install ncal`.
+- `ncal` shows a vertical or `cal` shows a horizontal calendar of the current month.
+- `ncal` also highlights the current day but can be turned off with `-h`.
+- Other useful options for `cal` and `ncal`:
+  - `cal -3` shows three months: current, previous and next.
+  - Display a specific month: `cal {month} {year}` or `cal -d {yyyy-mm}`.
+  - `cal -A3 -B2` shows 2 months before, 3 after and the current month.
+  - `ncal -C` turns `ncal` into the horizontal `cal` but retains the current date highlight.
+
+- Can also use more advanced command-line calendar packages like [`khal`](https://github.com/pimutils/khal).
+
 ### Plotting
 
 - `gnupplot` is a commnad-line plotting tool plus language.
