@@ -461,12 +461,31 @@ A hard link:
 
 - `ssh` denotes Secure Shell to connect to another remote machine using an encrypted network connection. Example usage: `ssh {username}@{ipaddress}`. Type in your password next and connect to the `{ipaddress}`.
 - See [this](https://www.raspberrypi.com/documentation/computers/remote-access.html) page for a brief SSH tutorial.
-- **Passwordless SSH**: To configure your machine to ssh into another remote machine without typing a password every time, you need to use an SSH key. To generate an SSH key:
-    - **Checking for Existing SSH Keys**: First, run `ls ~/.ssh`. If you see files named `id_rsa.pub` or `id_dsa.pub` then you have keys set up already, so you can skip the 'Generate new SSH keys' step below.
-    - **Generate new SSH Keys**: Run `ssh-keygen`. You will be asked where to save the key with a recommended default location (`~/.ssh/id_rsa`). Press `Enter`. You can enter an optional passphrase to encrypt the private SSH key, so that if someone else copied the key, they could not impersonate you to gain access. Type a passphrase here or leave it empty for no passphrase and press `Enter`. Run `ls ~/.ssh` and you should see the files `id_rsa` and `id_rsa.pub`. The `id_rsa` file is your private key to be kept on your machine. The `id_rsa.pub` file is your public key to share with remote machines that you connect to. When the machine you try to connect to matches up your public and private key, it will allow you to connect.
-    - **Copy your Key to your remote machine**: Using the machine which you will be connecting from, append the public key to your `authorized_keys` file on the remote machine by sending it over SSH: `ssh-copy-id {username}@{ipaddress}` during which you need to authenticate with your password. Alternatively, you can copy the file manually over SSH: `cat ~/.ssh/id_rsa.pub | ssh {username}@{ipaddress} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'`.
-    - Now try `ssh {username}@{ipaddress}` to connect without a password prompt.
-    - TODO: Find out more about basics of passwordless authentication, via `ssh-agent`, `ssh-add`, etc.
+
+#### Passwordless SSH
+
+To configure your machine to ssh into another remote machine without typing a password every time, you need to use an SSH key. To generate an SSH key:
+  - **Checking for Existing SSH Keys**: First, run `ls ~/.ssh`. If you see files named `id_rsa.pub` or `id_dsa.pub` then you have keys set up already, so you can skip the 'Generate new SSH keys' step below.
+  - **Generate new SSH Keys**: Run `ssh-keygen`. You will be asked where to save the key with a recommended default location (`~/.ssh/id_rsa`). Press `Enter`. You can enter an optional passphrase to encrypt the private SSH key, so that if someone else copied the key, they could not impersonate you to gain access. Type a passphrase here or leave it empty for no passphrase and press `Enter`. Run `ls ~/.ssh` and you should see the files `id_rsa` and `id_rsa.pub`. The `id_rsa` file is your private key to be kept on your machine. The `id_rsa.pub` file is your public key to share with remote machines that you connect to. When the machine you try to connect to matches up your public and private key, it will allow you to connect.
+  - **Copy your Key to your remote machine**: Using the machine which you will be connecting from, append the public key to your `authorized_keys` file on the remote machine by sending it over SSH: `ssh-copy-id {username}@{ipaddress}` during which you need to authenticate with your password. Alternatively, you can copy the file manually over SSH: `cat ~/.ssh/id_rsa.pub | ssh {username}@{ipaddress} 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'`.
+  - Now try `ssh {username}@{ipaddress}` to connect without a password prompt.
+  - TODO: Find out more about basics of passwordless authentication, via `ssh-agent`, `ssh-add`, etc.
+
+#### SSH port forwarding
+
+Command: `ssh -L [local_port]:[remote_host]:[remote_port] [username]@[ssh_server]`
+
+Breakdown of syntax:
+- `-L`: Specifies a local port forward.
+- `[local_port]`: Port on local machine that you want to use to access the remote service. Choose a port that is not already in use.
+- `[remote_host]`: This is the hostname or IP address of the remote machine that is running the service you want to access. If the service is running on the same machine as the SSH server, you can use localhost or 127.0.0.1.
+- `[remote_port]`: This is the port on the remote machine that the service is listening on.
+- `[username]`: This is the username you use to log in to the SSH server.
+- `[ssh_server]`: This is the hostname or IP address of the SSH server.
+
+Other useful options:
+- `-N`: This option specifies that you don't want to execute a remote command.
+- `-f`: This option specifies that you want to go into background mode before executing the command.
 
 ### Download/upload files
 
